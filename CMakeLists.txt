@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 set(INLCUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 set(SOURCES_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR  "${PROJECT_SOURCE_DIR}/vendor")
+set(ASSETS_DIR  "${PROJECT_SOURCE_DIR}/assets")
 
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${SOURCES_DIR}/*.cpp")
 
@@ -34,3 +35,4 @@ target_include_directories(
     PRIVATE "${VENDOR_DIR}/glfw/include"
 )
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_DIR="${ASSETS_DIR}")
