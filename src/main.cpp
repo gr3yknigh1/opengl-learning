@@ -8,8 +8,6 @@
 #include "glsandbox/glutils.hpp"
 #include "glsandbox/shader.hpp"
 
-#define __DEBUG_MODE__
-
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
     switch (errorCode)
@@ -111,9 +109,7 @@ int main(void)
     glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
     glfwSwapInterval(true);
 
-#ifdef __DEBUG_MODE__
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
 
     if (glewInit() != GLEW_OK)
     {
@@ -133,7 +129,6 @@ int main(void)
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     float vertices[] = {
         -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
-
         0.0f,  0.0f,  0.0f, 1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
     };
 
