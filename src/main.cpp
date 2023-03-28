@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#define __DEBUG_MODE__
 #define LOG(X) std::cout << X << '\n'
 #define STRINGIFY(X) (#X)
 #define ARRAY_COUNT(X) (sizeof((X)) / sizeof((X)[0]))
@@ -240,6 +241,10 @@ int main(void)
     glfwSetKeyCallback(window, GLFW_KeyCallback);
     glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
     glfwSwapInterval(true);
+
+#ifdef __DEBUG_MODE__
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
 
     if (glewInit() != GLEW_OK)
     {
