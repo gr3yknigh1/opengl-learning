@@ -5,143 +5,10 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "glsandbox/glutils.hpp"
+#include "glsandbox/shader.hpp"
+
 #define __DEBUG_MODE__
-#define LOG(X) std::cout << X << '\n'
-#define STRINGIFY(X) (#X)
-#define ARRAY_COUNT(X) (sizeof((X)) / sizeof((X)[0]))
-
-// TODO: Move to separate file
-const char *VERTEX_SHADER_SOURCE =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-
-const char *FRAGMENT_SHADER_SOURCE =
-    "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 0.7f);\n"
-    "}\n\0";
-
-/*
- *
- * Checkout all errors at <https://docs.gl/gl4/glGetError>
- * */
-const char *GLEW_ErrorCodeDispatch(int errorCode)
-{
-    switch (errorCode)
-    {
-    case GL_NO_ERROR:
-        return STRINGIFY(GL_NO_ERROR);
-    case GL_INVALID_ENUM:
-        return STRINGIFY(GL_INVALID_ENUM);
-    case GL_INVALID_VALUE:
-        return STRINGIFY(GL_INVALID_VALUE);
-    case GL_INVALID_OPERATION:
-        return STRINGIFY(GL_INVALID_OPERATION);
-    case GL_INVALID_FRAMEBUFFER_OPERATION:
-        return STRINGIFY(GL_INVALID_FRAMEBUFFER_OPERATION);
-    case GL_OUT_OF_MEMORY:
-        return STRINGIFY(GL_OUT_OF_MEMORY);
-    case GL_STACK_UNDERFLOW:
-        return STRINGIFY(GL_STACK_UNDERFLOW);
-    case GL_STACK_OVERFLOW:
-        return STRINGIFY(GL_STACK_OVERFLOW);
-    default:
-        return "GL_UNHANDLED_ERROR";
-    }
-
-    return nullptr;
-}
-
-void GL_ClearErrors()
-{
-    while (glGetError() != GL_NO_ERROR)
-        ;
-}
-
-void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
-                    uint32_t sourceLine)
-{
-    while (GLenum errorCode = glGetError())
-    {
-        std::printf("[GL]: %s - error code %d\n",
-                    GLEW_ErrorCodeDispatch(errorCode), errorCode);
-        std::printf("[GL]: Occured at %s::%d during %s call\n", sourceFilePath,
-                    sourceLine, glFunctionName);
-        std::exit(EXIT_FAILURE);
-    }
-}
-
-#define GL_Call(__glExpr)                                                      \
-    do                                                                         \
-    {                                                                          \
-        GL_ClearErrors();                                                      \
-        (__glExpr);                                                            \
-        GL_CheckErrors(#__glExpr, __FILE__, __LINE__);                         \
-    } while (0)
-
-#define GL_CallO(__glExpr, __outPtr)                                           \
-    do                                                                         \
-    {                                                                          \
-        GL_ClearErrors();                                                      \
-        *(__outPtr) = (__glExpr);                                              \
-        GL_CheckErrors(#__glExpr, __FILE__, __LINE__);                         \
-    } while (0)
-
-// TODO: Print which file is occuring error
-unsigned int GL_CompileShader(const char *shaderSource, int shaderType)
-{
-    int success;
-    char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
-
-    unsigned int shaderId = 0;
-    GL_CallO(glCreateShader(shaderType), &shaderId);
-    GL_Call(glShaderSource(shaderId, 1, &shaderSource, nullptr));
-    GL_Call(glCompileShader(shaderId));
-    GL_Call(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success));
-
-    if (!success)
-    {
-        GL_Call(glGetShaderInfoLog(shaderId, GL_INFO_LOG_LENGTH, nullptr,
-                                   shaderCompilationInfoLog));
-        std::printf("[GL]: Error during shader compilation: %s\n",
-                    shaderCompilationInfoLog);
-        std::exit(EXIT_FAILURE);
-        return 0;
-    }
-
-    return shaderId;
-}
-
-unsigned int GL_LinkShaderProgram(unsigned int vertexShaderId,
-                                  unsigned int fragmentShaderId)
-{
-    int success;
-    char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
-
-    unsigned int shaderProgramId = 0;
-    GL_CallO(glCreateProgram(), &shaderProgramId);
-
-    GL_Call(glAttachShader(shaderProgramId, vertexShaderId));
-    GL_Call(glAttachShader(shaderProgramId, fragmentShaderId));
-    GL_Call(glLinkProgram(shaderProgramId));
-
-    GL_Call(glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &success));
-
-    if (!success)
-    {
-        GL_Call(glGetProgramInfoLog(shaderProgramId, GL_INFO_LOG_LENGTH,
-                                    nullptr, shaderCompilationInfoLog));
-        std::exit(EXIT_FAILURE);
-    }
-
-    return shaderProgramId;
-}
 
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
@@ -214,6 +81,8 @@ void PrintDebugInfo()
 
 int main(void)
 {
+    using namespace glsandbox;
+
     if (!glfwInit())
     {
         std::printf("[GLFW]: Error! Failed initialize glfw\n");
@@ -262,21 +131,14 @@ int main(void)
     // ------------------------------------------------------ //
 
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    float vertices[] =
-    {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f,
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
 
-         0.0f, 0.0f, 0.0f,
-         1.0f, 1.0f, 0.0f,
-         1.0f, 0.0f, 0.0f,
+        0.0f,  0.0f,  0.0f, 1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,
     };
 
-    unsigned int indices[] =
-    {
-        0, 1, 2,
-        3, 4, 5,
+    unsigned int indices[] = {
+        0, 1, 2, 3, 4, 5,
     };
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
@@ -299,16 +161,9 @@ int main(void)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0));
     GL_Call(glEnableVertexAttribArray(0));
 
-    uint32_t vertexShader =
-        GL_CompileShader(VERTEX_SHADER_SOURCE, GL_VERTEX_SHADER);
-    uint32_t fragmentShader =
-        GL_CompileShader(FRAGMENT_SHADER_SOURCE, GL_FRAGMENT_SHADER);
-
-    uint32_t shaderProgram = GL_LinkShaderProgram(vertexShader, fragmentShader);
-
-    GL_Call(glUseProgram(shaderProgram));
-    GL_Call(glDeleteShader(vertexShader));
-    GL_Call(glDeleteShader(fragmentShader));
+    Shader shader =
+        Shader::FromFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
+                          ASSETS_DIR "/shaders/basic_fragment.glsl");
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
@@ -322,7 +177,7 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
-        GL_Call(glUseProgram(shaderProgram));
+        shader.Bind();
         GL_Call(glBindVertexArray(vao));
         GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
