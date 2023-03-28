@@ -23,7 +23,7 @@ const char *FRAGMENT_SHADER_SOURCE =
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 0.7f);\n"
     "}\n\0";
 
 /*
@@ -251,14 +251,30 @@ int main(void)
     PrintDebugInfo();
 
     GL_Call(glViewport(0, 0, windowSize.x, windowSize.y));
+    GL_Call(glEnable(GL_BLEND));
+    GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // ------------------------------------------------------ //
 
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                        0.0f,  0.0f,  0.5f, 0.0f};
+    float vertices[] =
+    {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
 
-    uint32_t vbo = 0, vao = 0;
+         0.0f, 0.0f, 0.0f,
+         1.0f, 1.0f, 0.0f,
+         1.0f, 0.0f, 0.0f,
+    };
+
+    unsigned int indices[] =
+    {
+        0, 1, 2,
+        3, 4, 5,
+    };
+
+    uint32_t vbo = 0, vao = 0, ebo = 0;
 
     // NOTE: it must be before `glVertexAttribPointer` call
     GL_Call(glGenVertexArrays(1, &vao));
@@ -269,11 +285,14 @@ int main(void)
     GL_Call(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
                          GL_STATIC_DRAW));
 
+    GL_Call(glGenBuffers(1, &ebo));
+    GL_Call(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                         GL_STATIC_DRAW));
+
     GL_Call(
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0));
     GL_Call(glEnableVertexAttribArray(0));
-
-    unsigned int indices[] = {0, 1, 3, 1, 2, 3};
 
     uint32_t vertexShader =
         GL_CompileShader(VERTEX_SHADER_SOURCE, GL_VERTEX_SHADER);
@@ -286,13 +305,21 @@ int main(void)
     GL_Call(glDeleteShader(vertexShader));
     GL_Call(glDeleteShader(fragmentShader));
 
+#if 1
+    GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+#else
+    GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+#endif
+
     while (!glfwWindowShouldClose(window))
     {
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
-        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 3));
+        GL_Call(glUseProgram(shaderProgram));
+        GL_Call(glBindVertexArray(vao));
+        GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
