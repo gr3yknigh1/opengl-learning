@@ -52,7 +52,7 @@ public:
         return fileContent;
     }
 
-    static Shader FromFiles(std::filesystem::path vertexSource,
+    static Shader FromSourceFiles(std::filesystem::path vertexSource,
                             std::filesystem::path fragmentSource)
     {
         unsigned int vertexShaderId = CompileShader(

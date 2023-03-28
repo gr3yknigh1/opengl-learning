@@ -162,8 +162,8 @@ int main(void)
     GL_Call(glEnableVertexAttribArray(0));
 
     Shader shader =
-        Shader::FromFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
-                          ASSETS_DIR "/shaders/basic_fragment.glsl");
+        Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
+                                ASSETS_DIR "/shaders/basic_fragment.glsl");
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
