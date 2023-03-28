@@ -9,6 +9,23 @@
 #define STRINGIFY(X) (#X)
 #define ARRAY_COUNT(X) (sizeof((X)) / sizeof((X)[0]))
 
+// TODO: Move to separate file
+const char *VERTEX_SHADER_SOURCE =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+
+const char *FRAGMENT_SHADER_SOURCE =
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n\0";
+
 /*
  *
  * Checkout all errors at <https://docs.gl/gl4/glGetError>
@@ -75,6 +92,56 @@ void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
         GL_CheckErrors(#__glExpr, __FILE__, __LINE__);                         \
     } while (0)
 
+// TODO: Print which file is occuring error
+unsigned int GL_CompileShader(const char *shaderSource, int shaderType)
+{
+    int success;
+    char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
+
+    unsigned int shaderId = 0;
+    GL_CallO(glCreateShader(shaderType), &shaderId);
+    GL_Call(glShaderSource(shaderId, 1, &shaderSource, nullptr));
+    GL_Call(glCompileShader(shaderId));
+    GL_Call(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success));
+
+    if (!success)
+    {
+        GL_Call(glGetShaderInfoLog(shaderId, GL_INFO_LOG_LENGTH, nullptr,
+                                   shaderCompilationInfoLog));
+        std::printf("[GL]: Error during shader compilation: %s\n",
+                    shaderCompilationInfoLog);
+        std::exit(EXIT_FAILURE);
+        return 0;
+    }
+
+    return shaderId;
+}
+
+unsigned int GL_LinkShaderProgram(unsigned int vertexShaderId,
+                                  unsigned int fragmentShaderId)
+{
+    int success;
+    char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
+
+    unsigned int shaderProgramId = 0;
+    GL_CallO(glCreateProgram(), &shaderProgramId);
+
+    GL_Call(glAttachShader(shaderProgramId, vertexShaderId));
+    GL_Call(glAttachShader(shaderProgramId, fragmentShaderId));
+    GL_Call(glLinkProgram(shaderProgramId));
+
+    GL_Call(glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &success));
+
+    if (!success)
+    {
+        GL_Call(glGetProgramInfoLog(shaderProgramId, GL_INFO_LOG_LENGTH,
+                                    nullptr, shaderCompilationInfoLog));
+        std::exit(EXIT_FAILURE);
+    }
+
+    return shaderProgramId;
+}
+
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
     switch (errorCode)
@@ -106,7 +173,7 @@ const char *GLFW_ErrorCodeDispatch(int errorCode)
 
 void GLFW_FrameBufferSizeCallback(GLFWwindow *window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    GL_Call(glViewport(0, 0, width, height));
 }
 
 void GLFW_ErrorHandler(int errorCode, const char *description)
@@ -120,7 +187,7 @@ void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
 {
     if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) && action == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window, true);
+        GL_Call(glfwSetWindowShouldClose(window, true));
     }
 }
 
@@ -131,7 +198,6 @@ void PrintDebugInfo()
 
     const unsigned char *glGlslVersion = nullptr;
     GL_CallO(glGetString(GL_SHADING_LANGUAGE_VERSION), &glGlslVersion);
-
 
     const unsigned char *glRendererVersion = nullptr;
     GL_CallO(glGetString(GL_RENDERER), &glRendererVersion);
@@ -192,30 +258,41 @@ int main(void)
     float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
                         0.0f,  0.0f,  0.5f, 0.0f};
 
-    uint32_t vbo = 0;
+    uint32_t vbo = 0, vao = 0;
+
+    // NOTE: it must be before `glVertexAttribPointer` call
+    GL_Call(glGenVertexArrays(1, &vao));
+    GL_Call(glBindVertexArray(vao));
+
     GL_Call(glGenBuffers(1, &vbo));
     GL_Call(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     GL_Call(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
                          GL_STATIC_DRAW));
 
-    const char *vertexShaderSource =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
+    GL_Call(
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0));
+    GL_Call(glEnableVertexAttribArray(0));
 
-    uint32_t vertexShader = 0;
-    GL_CallO(glCreateShader(GL_VERTEX_SHADER), &vertexShader);
-    GL_Call(glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr));
-    GL_Call(glCompileShader(vertexShader));
+    unsigned int indices[] = {0, 1, 3, 1, 2, 3};
+
+    uint32_t vertexShader =
+        GL_CompileShader(VERTEX_SHADER_SOURCE, GL_VERTEX_SHADER);
+    uint32_t fragmentShader =
+        GL_CompileShader(FRAGMENT_SHADER_SOURCE, GL_FRAGMENT_SHADER);
+
+    uint32_t shaderProgram = GL_LinkShaderProgram(vertexShader, fragmentShader);
+
+    GL_Call(glUseProgram(shaderProgram));
+    GL_Call(glDeleteShader(vertexShader));
+    GL_Call(glDeleteShader(fragmentShader));
 
     while (!glfwWindowShouldClose(window))
     {
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
+
+        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 3));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
