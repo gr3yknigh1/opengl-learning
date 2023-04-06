@@ -31,7 +31,7 @@ public:
     }
 
     // TODO: Move to sep FS util class
-    static std::string ReadFile(std::filesystem::path filePath)
+    static std::string ReadFile(const std::filesystem::path &filePath)
     {
         if (!std::filesystem::exists(filePath))
         {
@@ -52,8 +52,8 @@ public:
         return fileContent;
     }
 
-    static Shader FromSourceFiles(std::filesystem::path vertexSource,
-                            std::filesystem::path fragmentSource)
+    static Shader FromSourceFiles(const std::filesystem::path &vertexSource,
+                                  const std::filesystem::path &fragmentSource)
     {
         unsigned int vertexShaderId = CompileShader(
             vertexSource, ReadFile(vertexSource), GL_VERTEX_SHADER);
@@ -71,9 +71,9 @@ public:
     }
 
     // TODO: Replace `shaderType` with enumerator
-    static unsigned int CompileShader(std::filesystem::path shaderFilePath,
-                                      const std::string &shaderSource,
-                                      int shaderType)
+    static unsigned int CompileShader(
+        const std::filesystem::path &shaderFilePath,
+        const std::string &shaderSource, int shaderType)
     {
         int success;
         char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];

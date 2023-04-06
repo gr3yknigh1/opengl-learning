@@ -7,7 +7,7 @@ namespace glsandbox
 class GLObject
 {
 public:
-    unsigned int GetId(void) const
+    unsigned int GetId() const
     {
         return m_Id;
     }
