@@ -1,7 +1,10 @@
 #include <cstdio>
 #include <fstream>
+#include <optional>
+#include <stdexcept>
 
 #include <GL/glew.h>
+#include <fmt/format.h>
 
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/glutils.hpp"
@@ -21,6 +24,48 @@ void Shader::Bind() const
 
 void Shader::Unbind() const
 {
+}
+
+const std::optional<uint32_t> Shader::TryGetUniformLocation(
+    const std::string &name) const
+{
+    Bind();
+
+    int32_t uniformLocation = -1;
+    GL_CallO(glGetUniformLocation(GetId(), name.c_str()), &uniformLocation);
+    return uniformLocation >= 0
+               ? std::make_optional(static_cast<uint32_t>(uniformLocation))
+               : std::nullopt;
+}
+
+template <> void Shader::SetUniform(const std::string &name, bool value) const
+{
+    Bind();
+
+    const auto uniformLocation = TryGetUniformLocation(name);
+
+    if (!uniformLocation.has_value())
+    {
+        throw std::invalid_argument(
+            fmt::format("Error: Can't find location of uniform '{}'", name));
+    }
+
+    GL_Call(glUniform1i(uniformLocation.value(), static_cast<int32_t>(value)));
+}
+
+template <> void Shader::SetUniform(const std::string &name, float value) const
+{
+    Bind();
+
+    const auto uniformLocation = TryGetUniformLocation(name);
+
+    if (!uniformLocation.has_value())
+    {
+        throw std::invalid_argument(
+            fmt::format("Error: Can't find location of uniform '{}'", name));
+    }
+
+    GL_Call(glUniform1f(uniformLocation.value(), value));
 }
 
 std::string Shader::ReadFile(const std::filesystem::path &filePath)

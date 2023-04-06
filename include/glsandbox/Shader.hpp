@@ -4,6 +4,7 @@
 #include "glsandbox/globject.hpp"
 #include <cstdint>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 namespace glsandbox
@@ -18,6 +19,12 @@ public:
 
     void Bind() const;
     void Unbind() const;
+
+    const std::optional<uint32_t> TryGetUniformLocation(
+        const std::string &name) const;
+
+    template <typename UniformType>
+    void SetUniform(const std::string &name, UniformType value) const;
 
     // TODO: Move to sep FS util class
     static std::string ReadFile(const std::filesystem::path &filePath);

@@ -6,8 +6,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "glsandbox/glutils.hpp"
+#include "fmt/core.h"
 #include "glsandbox/Shader.hpp"
+#include "glsandbox/glutils.hpp"
 
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
@@ -162,6 +163,7 @@ int main(void)
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
+    shader.SetUniform<float>("mod", 0.2f);
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
