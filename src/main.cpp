@@ -1,6 +1,6 @@
+#include <cmath>
 #include <cstdint>
 #include <iostream>
-#include <cmath>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -128,15 +128,11 @@ int main(void)
     // ------------------------------------------------------ //
 
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    float vertices[] = {
-         0.5, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-    };
+    float vertices[] = {0.5,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+                        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+                        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f};
 
-    unsigned int indices[] = {
-        0, 1, 2
-    };
+    unsigned int indices[] = {0, 1, 2};
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
@@ -159,8 +155,9 @@ int main(void)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0));
     GL_Call(glEnableVertexAttribArray(0));
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(1);
+    GL_Call(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                                  (void *)(3 * sizeof(float))));
+    GL_Call(glEnableVertexAttribArray(1));
 
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
