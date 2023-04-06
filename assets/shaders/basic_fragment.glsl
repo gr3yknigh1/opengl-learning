@@ -2,10 +2,10 @@
 
 out vec4 FragColor;
 
-in vec4 fColor;
+in vec4 oColor;
 
 void main()
 {
-    FragColor = fColor;
+    FragColor = oColor;
 };
 

@@ -1,4 +1,6 @@
 #include "glsandbox/glutils.hpp"
+#include "fmt/core.h"
+#include <stdexcept>
 
 /*
  *
@@ -41,10 +43,9 @@ void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
 {
     while (GLenum errorCode = glGetError())
     {
-        std::printf("[GL]: %s - error code %d\n",
-                    GLEW_ErrorCodeDispatch(errorCode), errorCode);
-        std::printf("[GL]: Occured at %s::%d during %s call\n", sourceFilePath,
-                    sourceLine, glFunctionName);
-        std::exit(EXIT_FAILURE);
+        throw std::runtime_error(fmt::format(
+            "[GL]: {} - error code {}\n[GL]: Occured at {}::{} during {} call",
+            GLEW_ErrorCodeDispatch(errorCode), errorCode, sourceFilePath,
+            sourceLine, glFunctionName));
     }
 }

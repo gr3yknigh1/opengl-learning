@@ -163,7 +163,8 @@ int main(void)
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
-    shader.SetUniform<float>("mod", 0.2f);
+    // shader.SetUniform<float>("uVertexModifier", -1.f);
+    // shader.SetUniform<glm::vec3>("uVertexOffset", {.3, .3, .3});
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
