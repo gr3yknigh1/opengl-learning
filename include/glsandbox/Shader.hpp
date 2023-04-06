@@ -2,6 +2,7 @@
 #define SHADER_HPP_
 
 #include "glsandbox/globject.hpp"
+#include <cstdint>
 #include <filesystem>
 #include <string>
 
@@ -25,12 +26,12 @@ public:
                                   const std::filesystem::path &fragmentSource);
 
     // TODO: Replace `shaderType` with enumerator
-    static unsigned int CompileShader(
-        const std::filesystem::path &shaderFilePath,
-        const std::string &shaderSource, int shaderType);
+    static uint32_t CompileShader(const std::filesystem::path &shaderFilePath,
+                                  const std::string &shaderSource,
+                                  int shaderType);
 
-    static unsigned int LinkShaderProgram(unsigned int vertexShaderId,
-                                          unsigned int fragmentShaderId);
+    static uint32_t LinkShaderProgram(uint32_t vertexShaderId,
+                                      uint32_t fragmentShaderId);
 
 private:
     Shader();

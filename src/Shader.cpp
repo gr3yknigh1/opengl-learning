@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <fstream>
 
 #include <GL/glew.h>
@@ -46,11 +47,11 @@ std::string Shader::ReadFile(const std::filesystem::path &filePath)
 Shader Shader::FromSourceFiles(const std::filesystem::path &vertexSource,
                                const std::filesystem::path &fragmentSource)
 {
-    unsigned int vertexShaderId =
+    uint32_t vertexShaderId =
         CompileShader(vertexSource, ReadFile(vertexSource), GL_VERTEX_SHADER);
-    unsigned int fragmentShaderId = CompileShader(
+    uint32_t fragmentShaderId = CompileShader(
         fragmentSource, ReadFile(fragmentSource), GL_FRAGMENT_SHADER);
-    unsigned int shaderProgramId =
+    uint32_t shaderProgramId =
         LinkShaderProgram(vertexShaderId, fragmentShaderId);
 
     GL_Call(glDeleteShader(vertexShaderId));
@@ -61,15 +62,14 @@ Shader Shader::FromSourceFiles(const std::filesystem::path &vertexSource,
     return shader;
 }
 
-unsigned int Shader::CompileShader(const std::filesystem::path &shaderFilePath,
-                                   const std::string &shaderSource,
-                                   int shaderType)
+uint32_t Shader::CompileShader(const std::filesystem::path &shaderFilePath,
+                               const std::string &shaderSource, int shaderType)
 {
     int success;
     char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
     const char *shaderSourceData = shaderSource.c_str();
 
-    unsigned int shaderId = 0;
+    uint32_t shaderId = 0;
     GL_CallO(glCreateShader(shaderType), &shaderId);
     GL_Call(glShaderSource(shaderId, 1, &shaderSourceData, nullptr));
     GL_Call(glCompileShader(shaderId));
@@ -88,14 +88,14 @@ unsigned int Shader::CompileShader(const std::filesystem::path &shaderFilePath,
     return shaderId;
 }
 
-unsigned int Shader::LinkShaderProgram(unsigned int vertexShaderId,
-                                       unsigned int fragmentShaderId)
+uint32_t Shader::LinkShaderProgram(uint32_t vertexShaderId,
+                                   uint32_t fragmentShaderId)
 
 {
     int success;
     char shaderCompilationInfoLog[GL_INFO_LOG_LENGTH];
 
-    unsigned int shaderProgramId = 0;
+    uint32_t shaderProgramId = 0;
     GL_CallO(glCreateProgram(), &shaderProgramId);
 
     GL_Call(glAttachShader(shaderProgramId, vertexShaderId));
