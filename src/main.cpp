@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "glsandbox/glutils.hpp"
-#include "glsandbox/shader.hpp"
+#include "glsandbox/Shader.hpp"
 
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
