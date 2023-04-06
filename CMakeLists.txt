@@ -18,6 +18,7 @@ add_definitions(-DGLEW_STATIC)
 add_subdirectory("${VENDOR_DIR}/glew"   EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/glfw"   EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/glm"    EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/fmt"    EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME} "${SOURCES_DIR}/main.cpp")
 
@@ -27,12 +28,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INLCUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE libglew_static)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 target_include_directories(
     ${PROJECT_NAME}
     PRIVATE "${VENDOR_DIR}/glm"
     PRIVATE "${VENDOR_DIR}/glew/include"
     PRIVATE "${VENDOR_DIR}/glfw/include"
+    PRIVATE "${VENDOR_DIR}/fmt/include"
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_DIR="${ASSETS_DIR}")
