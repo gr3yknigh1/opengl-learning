@@ -2,10 +2,7 @@
 #define SHADER_HPP_
 
 #include "glsandbox/globject.hpp"
-#include "glsandbox/glutils.hpp"
-#include <GL/glew.h>
 #include <filesystem>
-#include <fstream>
 #include <string>
 
 namespace glsandbox

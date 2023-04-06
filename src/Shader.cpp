@@ -1,4 +1,9 @@
+#include <fstream>
+
+#include <GL/glew.h>
+
 #include "glsandbox/Shader.hpp"
+#include "glsandbox/glutils.hpp"
 
 namespace glsandbox
 {
