@@ -132,25 +132,16 @@ int main(void)
     // ------------------------------------------------------ //
 
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    float vertices[] = {0.5,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-                        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-                        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f};
-
-    unsigned int indices[] = {0, 1, 2};
-
-    float texCoords[] = {
-        0.0f, 0.0f, // lower-left corner
-        1.0f, 0.0f, // lower-right corner
-        0.5f, 1.0f  // top-center corner
+    float vertices[] = {
+        // positions        // colors         // texture coords
+        0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
 
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+    unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
-    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     // GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
     //                         GL_LINEAR_MIPMAP_LINEAR));
@@ -159,6 +150,7 @@ int main(void)
 
     int width, height, nrChannels;
     const char *texturePath = "textures/gavkoshmig.png";
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data =
         stbi_load(fmt::format("{}/{}", ASSETS_DIR, texturePath).c_str(), &width,
                   &height, &nrChannels, 0);
@@ -170,15 +162,22 @@ int main(void)
     }
 
     uint32_t textureId;
+
     GL_Call(glGenTextures(1, &textureId));
-
     GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
-
     GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                          GL_UNSIGNED_BYTE, data));
     GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
 
     stbi_image_free(data);
+
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
@@ -198,18 +197,23 @@ int main(void)
 
     // position attribute
     GL_Call(
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0));
     GL_Call(glEnableVertexAttribArray(0));
     // color attribute
-    GL_Call(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    GL_Call(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                                   (void *)(3 * sizeof(float))));
     GL_Call(glEnableVertexAttribArray(1));
+
+    GL_Call(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                                  (void *)(6 * sizeof(float))));
+    GL_Call(glEnableVertexAttribArray(2));
 
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
-    shader.SetUniform("uVertexModifier", -1.f);
-    shader.SetUniform("uVertexOffset", {.3, .3, .3});
+    shader.SetUniform("u_VertexModifier", 1.f);
+    shader.SetUniform("u_VertexOffset", {.3, .3, .3});
+    shader.SetUniform("u_Texture", 0);
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
@@ -223,7 +227,10 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureId);
         shader.Bind();
+        GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
         GL_Call(glBindVertexArray(vao));
         GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 

@@ -56,6 +56,21 @@ void Shader::SetUniform(const std::string &name, bool value) const
     GL_Call(glUniform1i(uniformLocation.value(), static_cast<int32_t>(value)));
 }
 
+void Shader::SetUniform(const std::string &name, int32_t value) const
+{
+    Bind();
+
+    const auto uniformLocation = TryGetUniformLocation(name);
+
+    if (!uniformLocation.has_value())
+    {
+        throw std::invalid_argument(
+            fmt::format("Error: Can't find location of uniform '{}'", name));
+    }
+
+    GL_Call(glUniform1i(uniformLocation.value(), value));
+}
+
 void Shader::SetUniform(const std::string &name, float value) const
 {
     Bind();
