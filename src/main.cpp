@@ -161,7 +161,8 @@ int main(void)
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
-    Texture texture0(ASSETS_DIR "/textures/gavkoshmig.png");
+    Texture texture0(ASSETS_DIR "/textures/container.jpg");
+    Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
@@ -197,7 +198,8 @@ int main(void)
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
     shader.SetUniform("u_VertexModifier", 1.f);
     shader.SetUniform("u_VertexOffset", textureOffset);
-    shader.SetUniform("u_Texture", 0);
+    shader.SetUniform("u_Texture0", 0);
+    shader.SetUniform("u_Texture1", 1);
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
@@ -211,7 +213,8 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
-        texture0.Bind();
+        texture0.Bind(0);
+        texture1.Bind(1);
         shader.Bind();
         shader.SetUniform("u_VertexOffset", textureOffset);
         GL_Call(glBindVertexArray(vao));

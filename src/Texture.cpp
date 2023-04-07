@@ -14,7 +14,7 @@ Texture::Texture(const std::filesystem::path &imagePath)
     if (!std::filesystem::exists(imagePath))
     {
         throw std::runtime_error(
-            fmt::format("Path doesn't exists", imagePath.c_str()));
+            fmt::format("Path doesn't exists '{}'", imagePath.c_str()));
     }
 
     stbi_set_flip_vertically_on_load(1);
@@ -52,18 +52,18 @@ Texture::~Texture()
     Delete();
 }
 
-inline void Texture::Delete() const
+void Texture::Delete() const
 {
     GL_Call(glDeleteTextures(1, &m_Id));
 }
 
-inline void Texture::Bind() const
+void Texture::Bind() const
 {
     GL_Call(glActiveTexture(GL_TEXTURE0));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 }
 
-inline void Texture::Bind(uint32_t slot) const
+void Texture::Bind(uint32_t slot) const
 {
     GL_Call(glActiveTexture(GL_TEXTURE0 + slot));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
