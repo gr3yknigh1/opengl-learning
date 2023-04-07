@@ -1,13 +1,14 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <fmt/format.h>
+#include <glm/glm.hpp>
+#include <stb_image.h>
 
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/glutils.hpp"
@@ -150,6 +151,34 @@ int main(void)
 
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+    // GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+    //                         GL_LINEAR_MIPMAP_LINEAR));
+    // GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+    // GL_LINEAR));
+
+    int width, height, nrChannels;
+    const char *texturePath = "textures/gavkoshmig.png";
+    unsigned char *data =
+        stbi_load(fmt::format("{}/{}", ASSETS_DIR, texturePath).c_str(), &width,
+                  &height, &nrChannels, 0);
+
+    if (data == nullptr)
+    {
+        throw std::runtime_error(
+            fmt::format("Error during image loading: '{}'", texturePath));
+    }
+
+    uint32_t textureId;
+    GL_Call(glGenTextures(1, &textureId));
+
+    GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
+
+    GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                         GL_UNSIGNED_BYTE, data));
+    GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
+
+    stbi_image_free(data);
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
