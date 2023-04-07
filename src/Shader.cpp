@@ -7,11 +7,8 @@
 #include <fmt/format.h>
 #include <glm/glm.hpp>
 
+#include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
-#include "glsandbox/glutils.hpp"
-
-namespace glsandbox
-{
 
 static const std::size_t GL_SHADER_COMPILATION_LOG_BUFFER_SIZE = 512;
 
@@ -198,5 +195,3 @@ uint32_t Shader::LinkShaderProgram(uint32_t vertexShaderId,
 }
 
 Shader::Shader(){};
-
-} // namespace glsandbox

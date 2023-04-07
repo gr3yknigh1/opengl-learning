@@ -1,8 +1,5 @@
-#ifndef GLOBJECT_HPP_H
-#define GLOBJECT_HPP_H
-
-namespace glsandbox
-{
+#ifndef GLOBJECT_HPP_
+#define GLOBJECT_HPP_
 
 class GLObject
 {
@@ -19,6 +16,4 @@ protected:
     unsigned int m_Id;
 };
 
-} // namespace glsandbox
-
-#endif // GLOBJECT_HPP_H
+#endif // GLOBJECT_HPP_

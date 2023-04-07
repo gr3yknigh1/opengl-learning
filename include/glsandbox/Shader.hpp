@@ -1,16 +1,14 @@
 #ifndef SHADER_HPP_
 #define SHADER_HPP_
 
-#include <glm/glm.hpp>
-
-#include "glsandbox/globject.hpp"
 #include <cstdint>
 #include <filesystem>
 #include <optional>
 #include <string>
 
-namespace glsandbox
-{
+#include <glm/glm.hpp>
+
+#include "glsandbox/GLObject.hpp"
 
 // TODO: Separate shader compilation login in `ShaderTranslationUnit` and leave
 // here only shader program logic
@@ -47,7 +45,5 @@ public:
 private:
     Shader();
 };
-
-} // namespace glsandbox
 
 #endif // SHADER_HPP_

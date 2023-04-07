@@ -1,6 +1,8 @@
-#include "glsandbox/glutils.hpp"
-#include "fmt/core.h"
 #include <stdexcept>
+
+#include <fmt/format.h>
+
+#include "glsandbox/GLUtils.hpp"
 
 /*
  *

@@ -1,6 +1,6 @@
-#ifndef DEFS_HPP_H_
-#define DEFS_HPP_H_
+#ifndef DEFS_HPP_
+#define DEFS_HPP_
 
 #define STRINGIFY(X) (#X)
 
-#endif // DEFS_HPP_H_
+#endif // DEFS_HPP_

@@ -10,8 +10,8 @@
 #include <glm/glm.hpp>
 #include <stb_image.h>
 
+#include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
-#include "glsandbox/glutils.hpp"
 
 glm::vec3 textureOffset = {0, 0, 0};
 float textureOffsetSpeed = 0.01;
@@ -104,8 +104,6 @@ void PrintDebugInfo()
 
 int main(void)
 {
-    using namespace glsandbox;
-
     if (!glfwInit())
     {
         std::printf("[GLFW]: Error! Failed initialize glfw\n");

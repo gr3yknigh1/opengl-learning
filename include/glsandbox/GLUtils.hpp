@@ -1,9 +1,12 @@
 #ifndef GLUTILS_HPP_H_
 #define GLUTILS_HPP_H_
 
-#include "glsandbox/defs.hpp"
-#include <GL/glew.h>
+#include <cstdint>
 #include <iostream>
+
+#include <GL/glew.h>
+
+#include "glsandbox/defs.hpp"
 
 const char *GLEW_ErrorCodeDispatch(int errorCode);
 
