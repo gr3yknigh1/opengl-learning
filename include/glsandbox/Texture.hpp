@@ -2,6 +2,7 @@
 #define TEXTURE_HPP_
 
 #include <cstdint>
+#include <filesystem>
 #include <string>
 
 #include "glsandbox/GLObject.hpp"
@@ -9,7 +10,7 @@
 class Texture : GLObject
 {
 public:
-    Texture(const char *filePath);
+    Texture(const std::filesystem::path &filePath);
     ~Texture();
 
     void Delete() const;
