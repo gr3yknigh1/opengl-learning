@@ -13,6 +13,9 @@
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/glutils.hpp"
 
+glm::vec3 textureOffset = {0, 0, 0};
+float textureOffsetSpeed = 0.01;
+
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
     switch (errorCode)
@@ -59,6 +62,23 @@ void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
     if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) && action == GLFW_PRESS)
     {
         GL_Call(glfwSetWindowShouldClose(window, true));
+    }
+
+    if (key == GLFW_KEY_W)
+    {
+        textureOffset.y += textureOffsetSpeed;
+    }
+    if (key == GLFW_KEY_S)
+    {
+        textureOffset.y -= textureOffsetSpeed;
+    }
+    if (key == GLFW_KEY_D)
+    {
+        textureOffset.x += textureOffsetSpeed;
+    }
+    if (key == GLFW_KEY_A)
+    {
+        textureOffset.x -= textureOffsetSpeed;
     }
 }
 
@@ -142,12 +162,6 @@ int main(void)
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
-
-    // GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-    //                         GL_LINEAR_MIPMAP_LINEAR));
-    // GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-    // GL_LINEAR));
-
     int width, height, nrChannels;
     const char *texturePath = "textures/gavkoshmig.png";
     stbi_set_flip_vertically_on_load(true);
@@ -212,7 +226,7 @@ int main(void)
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
     shader.SetUniform("u_VertexModifier", 1.f);
-    shader.SetUniform("u_VertexOffset", {.3, .3, .3});
+    shader.SetUniform("u_VertexOffset", textureOffset);
     shader.SetUniform("u_Texture", 0);
 
 #if 1
@@ -230,6 +244,7 @@ int main(void)
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureId);
         shader.Bind();
+        shader.SetUniform("u_VertexOffset", textureOffset);
         GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
         GL_Call(glBindVertexArray(vao));
         GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
