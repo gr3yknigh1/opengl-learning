@@ -36,6 +36,7 @@ target_include_directories(
     PRIVATE "${VENDOR_DIR}/glew/include"
     PRIVATE "${VENDOR_DIR}/glfw/include"
     PRIVATE "${VENDOR_DIR}/fmt/include"
+    PRIVATE "${VENDOR_DIR}/stb"
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_DIR="${ASSETS_DIR}")
