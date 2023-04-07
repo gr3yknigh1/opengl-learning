@@ -1,6 +1,8 @@
 #ifndef SHADER_HPP_
 #define SHADER_HPP_
 
+#include <glm/glm.hpp>
+
 #include "glsandbox/globject.hpp"
 #include <cstdint>
 #include <filesystem>
@@ -23,8 +25,9 @@ public:
     const std::optional<uint32_t> TryGetUniformLocation(
         const std::string &name) const;
 
-    template <typename UniformType>
-    void SetUniform(const std::string &name, UniformType value) const;
+    void SetUniform(const std::string &name, bool value) const;
+    void SetUniform(const std::string &name, float value) const;
+    void SetUniform(const std::string &name, const glm::vec3 &value) const;
 
     // TODO: Move to sep FS util class
     static std::string ReadFile(const std::filesystem::path &filePath);

@@ -41,7 +41,7 @@ const std::optional<uint32_t> Shader::TryGetUniformLocation(
                : std::nullopt;
 }
 
-template <> void Shader::SetUniform(const std::string &name, bool value) const
+void Shader::SetUniform(const std::string &name, bool value) const
 {
     Bind();
 
@@ -56,7 +56,7 @@ template <> void Shader::SetUniform(const std::string &name, bool value) const
     GL_Call(glUniform1i(uniformLocation.value(), static_cast<int32_t>(value)));
 }
 
-template <> void Shader::SetUniform(const std::string &name, float value) const
+void Shader::SetUniform(const std::string &name, float value) const
 {
     Bind();
 
@@ -71,8 +71,7 @@ template <> void Shader::SetUniform(const std::string &name, float value) const
     GL_Call(glUniform1f(uniformLocation.value(), value));
 }
 
-template <>
-void Shader::SetUniform(const std::string &name, glm::vec3 value) const
+void Shader::SetUniform(const std::string &name, const glm::vec3 &value) const
 {
     Bind();
 

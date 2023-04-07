@@ -2,11 +2,13 @@
 #include <cstdint>
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <fmt/format.h>
 
-#include "fmt/core.h"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/glutils.hpp"
 
@@ -135,6 +137,20 @@ int main(void)
 
     unsigned int indices[] = {0, 1, 2};
 
+    float texCoords[] = {
+        0.0f, 0.0f, // lower-left corner
+        1.0f, 0.0f, // lower-right corner
+        0.5f, 1.0f  // top-center corner
+    };
+
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
     // NOTE: it must be before `glVertexAttribPointer` call
@@ -163,8 +179,8 @@ int main(void)
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
-    // shader.SetUniform<float>("uVertexModifier", -1.f);
-    // shader.SetUniform<glm::vec3>("uVertexOffset", {.3, .3, .3});
+    shader.SetUniform("uVertexModifier", -1.f);
+    shader.SetUniform("uVertexOffset", {.3, .3, .3});
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
