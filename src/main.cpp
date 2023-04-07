@@ -12,6 +12,7 @@
 
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
+#include "glsandbox/Texture.hpp"
 
 glm::vec3 textureOffset = {0, 0, 0};
 float textureOffsetSpeed = 0.01;
@@ -160,36 +161,7 @@ int main(void)
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
-    int width, height, nrChannels;
-    const char *texturePath = "textures/gavkoshmig.png";
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data =
-        stbi_load(fmt::format("{}/{}", ASSETS_DIR, texturePath).c_str(), &width,
-                  &height, &nrChannels, 0);
-
-    if (data == nullptr)
-    {
-        throw std::runtime_error(
-            fmt::format("Error during image loading: '{}'", texturePath));
-    }
-
-    uint32_t textureId;
-
-    GL_Call(glGenTextures(1, &textureId));
-    GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
-    GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                         GL_UNSIGNED_BYTE, data));
-    GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
-
-    stbi_image_free(data);
-
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
-
-    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    Texture texture0(ASSETS_DIR "/textures/gavkoshmig.png");
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
@@ -239,11 +211,9 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureId);
+        texture0.Bind();
         shader.Bind();
         shader.SetUniform("u_VertexOffset", textureOffset);
-        GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
         GL_Call(glBindVertexArray(vao));
         GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 

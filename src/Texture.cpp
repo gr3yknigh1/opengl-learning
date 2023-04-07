@@ -42,7 +42,7 @@ Texture::Texture(const std::filesystem::path &imagePath)
     GL_Call(
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
 
-    GL_Call(glBindTexture(GL_TEXTURE_2D, 0));
+    Unbind();
 
     stbi_image_free(m_Buffer);
 }
@@ -63,7 +63,7 @@ inline void Texture::Bind() const
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 }
 
-void Texture::Bind(uint32_t slot) const
+inline void Texture::Bind(uint32_t slot) const
 {
     GL_Call(glActiveTexture(GL_TEXTURE0 + slot));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));

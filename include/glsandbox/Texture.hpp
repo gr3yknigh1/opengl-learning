@@ -10,10 +10,10 @@
 class Texture : GLObject
 {
 public:
-    Texture(const std::filesystem::path &filePath);
+    Texture(const std::filesystem::path &imagePath);
     ~Texture();
 
-    void Delete() const;
+    inline void Delete() const;
 
     void Bind() const;
     void Bind(uint32_t slot) const;
