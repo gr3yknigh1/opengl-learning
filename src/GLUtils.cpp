@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 
 #include "glsandbox/GLUtils.hpp"
+#include "glsandbox/defs.hpp"
 
 /*
  *

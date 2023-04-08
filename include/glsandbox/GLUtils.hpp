@@ -1,12 +1,10 @@
-#ifndef GLUTILS_HPP_H_
-#define GLUTILS_HPP_H_
+#ifndef GLUTILS_HPP_
+#define GLUTILS_HPP_
 
 #include <cstdint>
 #include <iostream>
 
 #include <GL/glew.h>
-
-#include "glsandbox/defs.hpp"
 
 const char *GLEW_ErrorCodeDispatch(int errorCode);
 
@@ -30,4 +28,4 @@ void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
         GL_CheckErrors(#__glExpr, __FILE__, __LINE__);                         \
     } while (0)
 
-#endif // GLUTILS_HPP_H_
+#endif // GLUTILS_HPP_
