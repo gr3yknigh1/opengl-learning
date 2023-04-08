@@ -13,22 +13,22 @@ public:
     Texture(const std::filesystem::path &imagePath);
     ~Texture();
 
-    inline void Delete() const;
+    void Delete() const;
 
     void Bind() const;
-    void Bind(uint32_t slot) const;
+    void Bind(const uint32_t slot) const;
     void Unbind() const;
 
     constexpr int GetWidth() const;
     constexpr int GetHeight() const;
 
 private:
-    std::string m_FilePath;
+    const std::string m_TexturePath;
     unsigned char *m_Buffer;
 
-    int m_Width;
-    int m_Height;
-    int m_BPP; // Bits Per Pixel
+    uint32_t m_Width;
+    uint32_t m_Height;
+    uint32_t m_BPP; // Bits Per Pixel
 };
 
 #endif // TEXTURE_HPP_

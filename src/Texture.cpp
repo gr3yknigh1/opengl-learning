@@ -7,23 +7,26 @@
 #include "glsandbox/Texture.hpp"
 
 // NOTE: Currently channel parameter doens't not affect
-Texture::Texture(const std::filesystem::path &imagePath)
-    : m_FilePath(imagePath), m_Buffer(nullptr), m_Width(0), m_Height(0),
+Texture::Texture(const std::filesystem::path &texturePath)
+    : m_TexturePath(texturePath), m_Buffer(nullptr), m_Width(0), m_Height(0),
       m_BPP(0)
 {
-    if (!std::filesystem::exists(imagePath))
+    if (!std::filesystem::exists(texturePath))
     {
         throw std::runtime_error(
-            fmt::format("Path doesn't exists '{}'", imagePath.c_str()));
+            fmt::format("Path doesn't exists '{}'", texturePath.c_str()));
     }
 
     stbi_set_flip_vertically_on_load(1);
-    m_Buffer = stbi_load(imagePath.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+    // TODO: Add channels field
+    m_Buffer = stbi_load(texturePath.c_str(), reinterpret_cast<int *>(&m_Width),
+                         reinterpret_cast<int *>(&m_Height),
+                         reinterpret_cast<int *>(&m_BPP), 4);
 
     if (m_Buffer == nullptr)
     {
-        throw std::runtime_error(
-            fmt::format("Error during image loading: '{}'", imagePath.c_str()));
+        throw std::runtime_error(fmt::format("Error during image loading: '{}'",
+                                             texturePath.c_str()));
     }
 
     GL_Call(glGenTextures(1, &m_Id));
@@ -63,7 +66,7 @@ void Texture::Bind() const
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 }
 
-void Texture::Bind(uint32_t slot) const
+void Texture::Bind(const uint32_t slot) const
 {
     GL_Call(glActiveTexture(GL_TEXTURE0 + slot));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
