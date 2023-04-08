@@ -17,7 +17,7 @@ Texture::Texture(const std::filesystem::path &texturePath)
             fmt::format("Path doesn't exists '{}'", texturePath.c_str()));
     }
 
-    stbi_set_flip_vertically_on_load(1);
+    stbi_set_flip_vertically_on_load(true);
     // TODO: Add channels field
     m_Buffer = stbi_load(texturePath.c_str(), reinterpret_cast<int *>(&m_Width),
                          reinterpret_cast<int *>(&m_Height),
