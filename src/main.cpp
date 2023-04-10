@@ -1,5 +1,3 @@
-#include "glsandbox/IndexBuffer.hpp"
-#include "glsandbox/VertexBufferLayout.hpp"
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -11,12 +9,15 @@
 #include <GLFW/glfw3.h>
 #include <fmt/format.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
 
 #include "glsandbox/GLUtils.hpp"
+#include "glsandbox/IndexBuffer.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
 #include "glsandbox/VertexArray.hpp"
+#include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
 
 glm::vec3 textureOffset = {0, 0, 0};
@@ -155,16 +156,15 @@ int main(void)
 
     // ------------------------------------------------------ //
 
-    glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    std::vector<float> vertices = {
+    const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
+    const std::vector<float> vertices = {
         // positions        // colors         // texture coords
         0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
         0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
-
-    std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
+    const std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
     Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
@@ -185,6 +185,12 @@ int main(void)
     shader.SetUniform("u_VertexOffset", textureOffset);
     shader.SetUniform("u_Texture0", 0);
     shader.SetUniform("u_Texture1", 1);
+
+    glm::mat4 transformation = glm::mat4(1.0f);
+    transformation = glm::rotate(transformation, glm::radians(190.0f),
+                                 glm::vec3(0.0, 0.0, 1.0));
+
+    shader.SetUniform("u_Transform", transformation);
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
