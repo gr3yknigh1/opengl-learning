@@ -32,7 +32,7 @@ const std::optional<uint32_t> Shader::TryGetUniformLocation(
     Bind();
 
     int32_t uniformLocation = -1;
-    GL_CallO(glGetUniformLocation(GetId(), name.c_str()), &uniformLocation);
+    GL_CallO(glGetUniformLocation(m_Id, name.c_str()), &uniformLocation);
     return uniformLocation >= 0
                ? std::make_optional(static_cast<uint32_t>(uniformLocation))
                : std::nullopt;
