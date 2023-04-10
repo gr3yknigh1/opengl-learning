@@ -13,7 +13,7 @@ public:
     void Bind() const;
     void Unbind() const;
 
-    constexpr std::size_t GetCount() const;
+    uint64_t GetCount() const;
 
 private:
     const uint64_t m_Count;
