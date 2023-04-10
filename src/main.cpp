@@ -11,6 +11,7 @@
 #include <glm/ext/matrix_projection.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -22,6 +23,13 @@
 #include "glsandbox/VertexArray.hpp"
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
+
+glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
@@ -71,18 +79,17 @@ void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
         GL_Call(glfwSetWindowShouldClose(window, true));
     }
 
-    if (key == GLFW_KEY_W)
-    {
-    }
-    if (key == GLFW_KEY_S)
-    {
-    }
-    if (key == GLFW_KEY_D)
-    {
-    }
-    if (key == GLFW_KEY_A)
-    {
-    }
+    float cameraSpeed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPosition += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPosition -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPosition -=
+            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPosition +=
+            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 void PrintDebugInfo()
@@ -244,6 +251,10 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -266,6 +277,24 @@ int main(void)
             projection = glm::perspective(
                 glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
 
+            // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+            // glm::vec3 cameraDirection =
+            //     glm::normalize(cameraPosition - cameraTarget);
+            // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+            // glm::vec3 cameraRight =
+            //     glm::normalize(glm::cross(up, cameraDirection));
+            // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+            //
+            // const float radius = 10.0f;
+            // float camX = sin(glfwGetTime()) * radius;
+            // float camZ = cos(glfwGetTime()) * radius;
+            // view =
+            //     glm::lookAt(glm::vec3(camX, 0.0, camZ),
+            //                 glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0,
+            //                 0.0));
+            view = glm::lookAt(cameraPosition, cameraPosition + cameraFront,
+                               cameraUp);
+
             shader.SetUniform("u_Transform", projection * view * model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -283,6 +312,8 @@ int main(void)
             ImGui::SliderFloat(
                 "FOV", &fov, 0.0f,
                 360.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::InputFloat3("Camera Position",
+                               glm::value_ptr(cameraPosition));
             ImGui::End();
         }
 
