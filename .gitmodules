@@ -10,3 +10,6 @@
 [submodule "vendor/fmt"]
 	path = vendor/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/gr3yknigh1/imgui
