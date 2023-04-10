@@ -262,6 +262,10 @@ int main(void)
             model = glm::rotate(
                 model, glm::radians(angle) + (float)(glfwGetTime() * 0.01),
                 glm::vec3(1.0f, 0.3f, 0.5f));
+
+            projection = glm::perspective(
+                glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
+
             shader.SetUniform("u_Transform", projection * view * model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -276,7 +280,9 @@ int main(void)
         if (guiWindow)
         {
             ImGui::Begin("Options", &guiWindow);
-            ImGui::Text("Hello world!");
+            ImGui::SliderFloat(
+                "FOV", &fov, 0.0f,
+                360.0f); // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::End();
         }
 
