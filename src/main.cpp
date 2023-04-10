@@ -20,9 +20,6 @@
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
 
-glm::vec3 textureOffset = {0, 0, 0};
-float textureOffsetSpeed = 0.01;
-
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
     switch (errorCode)
@@ -73,19 +70,15 @@ void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
 
     if (key == GLFW_KEY_W)
     {
-        textureOffset.y += textureOffsetSpeed;
     }
     if (key == GLFW_KEY_S)
     {
-        textureOffset.y -= textureOffsetSpeed;
     }
     if (key == GLFW_KEY_D)
     {
-        textureOffset.x += textureOffsetSpeed;
     }
     if (key == GLFW_KEY_A)
     {
-        textureOffset.x -= textureOffsetSpeed;
     }
 }
 
@@ -137,7 +130,7 @@ int main(void)
     glfwSetErrorCallback(GLFW_ErrorHandler);
     glfwSetKeyCallback(window, GLFW_KeyCallback);
     glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
-    glfwSwapInterval(true);
+    glfwSwapInterval(1);
 
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
@@ -181,17 +174,15 @@ int main(void)
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
-    shader.SetUniform("u_VertexModifier", 1.f);
-    shader.SetUniform("u_VertexOffset", textureOffset);
     shader.SetUniform("u_Texture0", 0);
     shader.SetUniform("u_Texture1", 1);
+
 
     glm::mat4 transformation = glm::mat4(1.0f);
     transformation = glm::rotate(transformation, glm::radians(190.0f),
                                  glm::vec3(0.0, 0.0, 1.0));
 
     shader.SetUniform("u_Transform", transformation);
-
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 #else
@@ -209,7 +200,11 @@ int main(void)
         texture0.BindTo(0);
         texture1.BindTo(1);
         shader.Bind();
-        shader.SetUniform("u_VertexOffset", textureOffset);
+
+        transformation = glm::rotate(transformation, (float)glfwGetTime(),
+                                     glm::vec3(0.0, 0.0, 1.0));
+        shader.SetUniform("u_Transform", transformation);
+
         GL_Call(
             glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 
