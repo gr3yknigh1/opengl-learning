@@ -153,12 +153,14 @@ int main(void)
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     const std::vector<float> vertices = {
-        // positions        // colors         // texture coords
-        0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-        0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-        -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+        // positions        // texture coords
+        0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
+        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
     };
+
+
     const std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
@@ -168,7 +170,6 @@ int main(void)
     VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
     IndexBuffer ib(indices.data(), indices.size() * sizeof(unsigned int));
     VertexBufferLayout layout;
-    layout.Pushf(3);
     layout.Pushf(3);
     layout.Pushf(2);
     va.AddBuffer(vb, layout);
@@ -212,9 +213,9 @@ int main(void)
         texture1.BindTo(1);
         shader.Bind();
 
-        transformation = glm::rotate(transformation, (float)glfwGetTime(),
-                                     glm::vec3(0.0, 0.0, 1.0));
-        shader.SetUniform("u_Transform", transformation);
+        // transformation = glm::rotate(transformation, (float)glfwGetTime(),
+        //                              glm::vec3(0.0, 0.0, 1.0));
+        // shader.SetUniform("u_Transform", transformation);
 
         GL_Call(
             glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
