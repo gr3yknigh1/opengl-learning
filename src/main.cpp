@@ -1,7 +1,10 @@
+#include "glsandbox/IndexBuffer.hpp"
+#include "glsandbox/VertexBufferLayout.hpp"
 #include <cmath>
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <GL/glew.h>
@@ -10,10 +13,11 @@
 #include <glm/glm.hpp>
 #include <stb_image.h>
 
-#include "glsandbox/defs.hpp"
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
+#include "glsandbox/VertexArray.hpp"
+#include "glsandbox/defs.hpp"
 
 glm::vec3 textureOffset = {0, 0, 0};
 float textureOffsetSpeed = 0.01;
@@ -152,7 +156,7 @@ int main(void)
     // ------------------------------------------------------ //
 
     glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    float vertices[] = {
+    std::vector<float> vertices = {
         // positions        // colors         // texture coords
         0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
         0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
@@ -160,39 +164,19 @@ int main(void)
         -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
 
-    unsigned int indices[] = {0, 1, 2, 0, 2, 3};
+    std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
     Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
 
-    uint32_t vbo = 0, vao = 0, ebo = 0;
-
-    // NOTE: it must be before `glVertexAttribPointer` call
-    GL_Call(glGenVertexArrays(1, &vao));
-    GL_Call(glBindVertexArray(vao));
-
-    GL_Call(glGenBuffers(1, &vbo));
-    GL_Call(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_Call(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-                         GL_STATIC_DRAW));
-
-    GL_Call(glGenBuffers(1, &ebo));
-    GL_Call(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
-    GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-                         GL_STATIC_DRAW));
-
-    // position attribute
-    GL_Call(
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0));
-    GL_Call(glEnableVertexAttribArray(0));
-    // color attribute
-    GL_Call(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                                  (void *)(3 * sizeof(float))));
-    GL_Call(glEnableVertexAttribArray(1));
-
-    GL_Call(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                                  (void *)(6 * sizeof(float))));
-    GL_Call(glEnableVertexAttribArray(2));
+    VertexArray va;
+    VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
+    IndexBuffer ib(indices.data(), indices.size() * sizeof(unsigned int));
+    VertexBufferLayout layout;
+    layout.Pushf(3);
+    layout.Pushf(3);
+    layout.Pushf(2);
+    va.AddBuffer(vb, layout);
 
     Shader shader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
@@ -214,12 +198,14 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT));
 
+        va.Bind();
+        ib.Bind();
         texture0.Bind(0);
         texture1.Bind(1);
         shader.Bind();
         shader.SetUniform("u_VertexOffset", textureOffset);
-        GL_Call(glBindVertexArray(vao));
-        GL_Call(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+        GL_Call(
+            glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
