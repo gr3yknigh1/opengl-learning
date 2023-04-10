@@ -11,6 +11,9 @@
 #include <glm/ext/matrix_projection.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/IndexBuffer.hpp"
@@ -148,6 +151,25 @@ int main(void)
     GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GL_Call(glEnable(GL_DEPTH_TEST));
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();
+    io.ConfigFlags |=
+        ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |=
+        ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    const char *glslVersion = "#version 130";
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glslVersion);
+
     // ------------------------------------------------------ //
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
@@ -217,6 +239,9 @@ int main(void)
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 #endif
 
+    // ImGUI State
+    bool guiWindow = true;
+
     while (!glfwWindowShouldClose(window))
     {
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
@@ -244,11 +269,29 @@ int main(void)
         // GL_Call(
         //     glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        if (guiWindow)
+        {
+            ImGui::Begin("Options", &guiWindow);
+            ImGui::Text("Hello world!");
+            ImGui::End();
+        }
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // ------------------------------------------------------ //
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwDestroyWindow(window);
     glfwTerminate();
