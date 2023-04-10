@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#define STB_IMAGE_IMPLEMENTATION
 #include <fmt/format.h>
 #include <stb_image.h>
 

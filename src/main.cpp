@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <vector>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <fmt/format.h>
@@ -12,7 +11,6 @@
 #include <glm/ext/matrix_projection.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
 
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/IndexBuffer.hpp"
