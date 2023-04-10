@@ -27,6 +27,7 @@ public:
     void SetUniform(const std::string &name, int32_t value) const;
     void SetUniform(const std::string &name, float value) const;
     void SetUniform(const std::string &name, const glm::vec3 &value) const;
+    void SetUniform(const std::string &name, const glm::mat4 &value) const;
 
     // TODO: Move to sep FS util class
     static std::string ReadFile(const std::filesystem::path &filePath);

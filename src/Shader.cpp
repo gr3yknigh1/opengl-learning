@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <fmt/format.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
@@ -96,6 +97,22 @@ void Shader::SetUniform(const std::string &name, const glm::vec3 &value) const
     }
 
     GL_Call(glUniform3f(uniformLocation.value(), value.x, value.y, value.z));
+}
+
+void Shader::SetUniform(const std::string &name, const glm::mat4 &value) const
+{
+    Bind();
+
+    const auto uniformLocation = TryGetUniformLocation(name);
+
+    if (!uniformLocation.has_value())
+    {
+        throw std::invalid_argument(
+            fmt::format("Error: Can't find location of uniform '{}'", name));
+    }
+
+    GL_Call(glUniformMatrix4fv(uniformLocation.value(), 1, GL_FALSE,
+                               glm::value_ptr(value)));
 }
 
 std::string Shader::ReadFile(const std::filesystem::path &filePath)
