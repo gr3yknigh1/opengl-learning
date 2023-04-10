@@ -77,12 +77,3 @@ void Texture::Unbind() const
     GL_Call(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
-constexpr int Texture::GetWidth() const
-{
-    return m_Width;
-}
-
-constexpr int Texture::GetHeight() const
-{
-    return m_Height;
-}

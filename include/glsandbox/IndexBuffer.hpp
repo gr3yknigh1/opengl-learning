@@ -13,7 +13,10 @@ public:
     void Bind() const;
     void Unbind() const;
 
-    uint64_t GetCount() const;
+    constexpr uint64_t GetCount() const
+    {
+        return m_Count;
+    }
 
 private:
     const uint64_t m_Count;

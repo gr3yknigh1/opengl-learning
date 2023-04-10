@@ -19,8 +19,15 @@ public:
     void Bind(const uint32_t slot) const;
     void Unbind() const;
 
-    constexpr int GetWidth() const;
-    constexpr int GetHeight() const;
+    constexpr int GetWidth() const
+    {
+        return m_Width;
+    }
+
+    constexpr int GetHeight() const
+    {
+        return m_Height;
+    }
 
 private:
     const std::string m_TexturePath;
