@@ -9,6 +9,7 @@
 class VertexBuffer : public GLObject
 {
 public:
+    // TODO: Add std::vector constructor
     VertexBuffer(const void *data, const std::size_t size);
 
     void Bind() const;
