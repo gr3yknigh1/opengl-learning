@@ -148,6 +148,7 @@ int main(void)
     GL_Call(glViewport(0, 0, windowSize.x, windowSize.y));
     GL_Call(glEnable(GL_BLEND));
     GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GL_Call(glEnable(GL_DEPTH_TEST));
 
     // ------------------------------------------------------ //
 
@@ -173,6 +174,12 @@ int main(void)
         -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f};
 
     const std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
+    const std::vector<glm::vec3> positions{
+        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
     Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
@@ -216,7 +223,7 @@ int main(void)
     {
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
-        GL_Call(glClear(GL_COLOR_BUFFER_BIT));
+        GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         va.Bind();
         ib.Bind();
@@ -224,11 +231,18 @@ int main(void)
         texture1.BindTo(1);
         shader.Bind();
 
-        transformation =
-            glm::rotate(transformation, (float)(glfwGetTime() * 0.001),
-                        glm::vec3(0.0, 0.0, 1.0));
-        shader.SetUniform("u_Transform", transformation);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (uint64_t i = 0; i < positions.size(); ++i)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(
+                model, glm::radians(angle) + (float)(glfwGetTime() * 0.01),
+                glm::vec3(1.0f, 0.3f, 0.5f));
+            shader.SetUniform("u_Transform", projection * view * model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
         // GL_Call(
         //     glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 
