@@ -128,6 +128,7 @@ int main(void)
     glfwSetErrorCallback(GLFW_ErrorHandler);
     glfwSetKeyCallback(window, GLFW_KeyCallback);
     glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSwapInterval(1);
 
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
