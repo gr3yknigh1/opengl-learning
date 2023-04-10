@@ -16,8 +16,13 @@ public:
     void Delete() const;
 
     void Bind() const;
-    void Bind(const uint32_t slot) const;
+    void BindTo(const uint32_t slot) const;
     void Unbind() const;
+
+    void SetOptionMinFilter(int option) const;
+    void SetOptionMagFilter(int option) const;
+    void SetOptionWrapsS(int option) const;
+    void SetOptionWrapsT(int option) const;
 
     constexpr int GetWidth() const
     {

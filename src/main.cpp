@@ -200,8 +200,8 @@ int main(void)
 
         va.Bind();
         ib.Bind();
-        texture0.Bind(0);
-        texture1.Bind(1);
+        texture0.BindTo(0);
+        texture1.BindTo(1);
         shader.Bind();
         shader.SetUniform("u_VertexOffset", textureOffset);
         GL_Call(

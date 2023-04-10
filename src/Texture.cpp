@@ -37,6 +37,7 @@ Texture::Texture(const std::filesystem::path &texturePath)
 
     GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
 
+    // TODO Add defaults for texture config
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     // NOTE: _S and _T is like x and y for textures
@@ -62,11 +63,10 @@ void Texture::Delete() const
 
 void Texture::Bind() const
 {
-    GL_Call(glActiveTexture(GL_TEXTURE0));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 }
 
-void Texture::Bind(const uint32_t slot) const
+void Texture::BindTo(const uint32_t slot) const
 {
     GL_Call(glActiveTexture(GL_TEXTURE0 + slot));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
@@ -77,3 +77,26 @@ void Texture::Unbind() const
     GL_Call(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
+void Texture::SetOptionMinFilter(int option) const
+{
+    Bind();
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, option));
+}
+
+void Texture::SetOptionMagFilter(int option) const
+{
+    Bind();
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, option));
+}
+
+void Texture::SetOptionWrapsS(int option) const
+{
+    Bind();
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, option));
+}
+
+void Texture::SetOptionWrapsT(int option) const
+{
+    Bind();
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, option));
+}
