@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <stb_image.h>
 
+#include "glsandbox/defs.hpp"
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
