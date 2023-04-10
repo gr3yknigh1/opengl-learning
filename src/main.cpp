@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <fmt/format.h>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_projection.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
@@ -177,12 +179,21 @@ int main(void)
     shader.SetUniform("u_Texture0", 0);
     shader.SetUniform("u_Texture1", 1);
 
+    float fov = 45.0f;
 
-    glm::mat4 transformation = glm::mat4(1.0f);
-    transformation = glm::rotate(transformation, glm::radians(190.0f),
-                                 glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 model = glm::mat4(1.0f);
+    model =
+        glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    glm::mat4 projection = glm::perspective(
+        glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
+
+    glm::mat4 transformation = projection * view * model;
     shader.SetUniform("u_Transform", transformation);
+
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 #else
