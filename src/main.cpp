@@ -78,18 +78,6 @@ void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
     {
         GL_Call(glfwSetWindowShouldClose(window, true));
     }
-
-    float cameraSpeed = 2.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPosition += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPosition -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPosition -=
-            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPosition +=
-            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 void PrintDebugInfo()
@@ -254,6 +242,18 @@ int main(void)
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        float cameraSpeed = 2.5f * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            cameraPosition += cameraSpeed * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            cameraPosition -= cameraSpeed * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            cameraPosition -=
+                glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            cameraPosition +=
+                glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
