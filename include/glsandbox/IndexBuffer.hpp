@@ -1,7 +1,6 @@
 #ifndef INDEXBUFFER_HPP_
 #define INDEXBUFFER_HPP_
 
-#include <cstddef>
 #include <cstdint>
 
 #include "glsandbox/GLObject.hpp"
@@ -9,7 +8,7 @@
 class IndexBuffer : public GLObject
 {
 public:
-    IndexBuffer(const uint32_t *indices, const std::size_t count);
+    IndexBuffer(const uint32_t *indices, const uint64_t count);
 
     void Bind() const;
     void Unbind() const;
@@ -17,7 +16,7 @@ public:
     constexpr std::size_t GetCount() const;
 
 private:
-    const std::size_t m_Count;
+    const uint64_t m_Count;
 };
 
 #endif // INDEXBUFFER_HPP_
