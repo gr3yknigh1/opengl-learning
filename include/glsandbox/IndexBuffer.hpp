@@ -2,13 +2,15 @@
 #define INDEXBUFFER_HPP_
 
 #include <cstdint>
+#include <vector>
 
 #include "glsandbox/GLObject.hpp"
 
 class IndexBuffer : public GLObject
 {
 public:
-    IndexBuffer(const uint32_t *indices, const uint64_t count);
+    explicit IndexBuffer(const uint32_t *indices, const uint64_t count);
+    explicit IndexBuffer(const std::vector<uint32_t> &indices);
 
     void Bind() const;
     void Unbind() const;

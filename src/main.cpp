@@ -286,7 +286,7 @@ int main(void)
 
     VertexArray va;
     VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
-    IndexBuffer ib(indices.data(), indices.size() * sizeof(unsigned int));
+    IndexBuffer ib(indices);
     VertexBufferLayout layout;
     layout.Pushf(3);
     layout.Pushf(2);
