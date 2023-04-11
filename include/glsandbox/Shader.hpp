@@ -37,7 +37,6 @@ public:
 
     // TODO: Replace `shaderType` with enumerator
     static uint32_t CompileShader(const std::filesystem::path &shaderFilePath,
-                                  const std::string &shaderSource,
                                   int shaderType);
 
     static uint32_t LinkShaderProgram(uint32_t vertexShaderId,

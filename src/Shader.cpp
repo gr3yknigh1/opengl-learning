@@ -119,14 +119,14 @@ std::string Shader::ReadFile(const std::filesystem::path &filePath)
 {
     if (!std::filesystem::exists(filePath))
     {
-        std::invalid_argument(
+        throw std::invalid_argument(
             fmt::format("[APP]: File '{}' doesn't exists", filePath.c_str()));
     }
 
     std::ifstream fstream(filePath, std::ios::in | std::ios::binary);
     if (!fstream.is_open())
     {
-        std::invalid_argument(
+        throw std::invalid_argument(
             fmt::format("[APP]: Can't open file '%s'", filePath.c_str()));
     }
 
@@ -139,10 +139,10 @@ std::string Shader::ReadFile(const std::filesystem::path &filePath)
 Shader Shader::FromSourceFiles(const std::filesystem::path &vertexSource,
                                const std::filesystem::path &fragmentSource)
 {
-    uint32_t vertexShaderId =
-        CompileShader(vertexSource, ReadFile(vertexSource), GL_VERTEX_SHADER);
-    uint32_t fragmentShaderId = CompileShader(
-        fragmentSource, ReadFile(fragmentSource), GL_FRAGMENT_SHADER);
+    uint32_t vertexShaderId = CompileShader(vertexSource, GL_VERTEX_SHADER);
+    uint32_t fragmentShaderId =
+        CompileShader(fragmentSource, GL_FRAGMENT_SHADER);
+
     uint32_t shaderProgramId =
         LinkShaderProgram(vertexShaderId, fragmentShaderId);
 
@@ -155,10 +155,10 @@ Shader Shader::FromSourceFiles(const std::filesystem::path &vertexSource,
 }
 
 uint32_t Shader::CompileShader(const std::filesystem::path &shaderFilePath,
-                               const std::string &shaderSource, int shaderType)
+                               int shaderType)
 {
-    int success;
-    char shaderCompilationInfoLog[GL_SHADER_COMPILATION_LOG_BUFFER_SIZE];
+    int success = 0;
+    const std::string shaderSource = ReadFile(shaderFilePath);
     const char *shaderSourceData = shaderSource.c_str();
 
     uint32_t shaderId = 0;
@@ -169,13 +169,15 @@ uint32_t Shader::CompileShader(const std::filesystem::path &shaderFilePath,
 
     if (!success)
     {
+        int logLength;
+        GL_Call(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength));
+        char shaderCompilationInfoLog[logLength];
         GL_Call(glGetShaderInfoLog(shaderId, GL_INFO_LOG_LENGTH, nullptr,
                                    shaderCompilationInfoLog));
-        throw std::runtime_error(
-            fmt::format("[GL]: Error during shader compilation: '{}' : {}",
-                        shaderFilePath.c_str(), shaderCompilationInfoLog)
 
-        );
+        throw std::runtime_error(fmt::format(
+            "[GL]: Error during shader compilation of {} at {}",
+            shaderFilePath.c_str(), std::string(shaderCompilationInfoLog)));
     }
 
     return shaderId;
@@ -183,10 +185,8 @@ uint32_t Shader::CompileShader(const std::filesystem::path &shaderFilePath,
 
 uint32_t Shader::LinkShaderProgram(uint32_t vertexShaderId,
                                    uint32_t fragmentShaderId)
-
 {
-    int success;
-    char shaderCompilationInfoLog[GL_SHADER_COMPILATION_LOG_BUFFER_SIZE];
+    int success = 1;
 
     uint32_t shaderProgramId = 0;
     GL_CallO(glCreateProgram(), &shaderProgramId);
@@ -194,18 +194,22 @@ uint32_t Shader::LinkShaderProgram(uint32_t vertexShaderId,
     GL_Call(glAttachShader(shaderProgramId, vertexShaderId));
     GL_Call(glAttachShader(shaderProgramId, fragmentShaderId));
     GL_Call(glLinkProgram(shaderProgramId));
+    GL_Call(glValidateProgram(shaderProgramId));
 
     GL_Call(glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &success));
 
     if (!success)
     {
+        int logLength;
+        GL_Call(
+            glGetProgramiv(shaderProgramId, GL_INFO_LOG_LENGTH, &logLength));
+        char shaderCompilationInfoLog[logLength];
         GL_Call(glGetProgramInfoLog(shaderProgramId, GL_INFO_LOG_LENGTH,
                                     nullptr, shaderCompilationInfoLog));
+
         throw std::runtime_error(
             fmt::format("[GL]: Error during shader program linking: {}",
-                        shaderCompilationInfoLog)
-
-        );
+                        std::string(shaderCompilationInfoLog)));
     }
 
     return shaderProgramId;
