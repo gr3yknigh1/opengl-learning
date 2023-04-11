@@ -31,6 +31,58 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+bool firstMouse = true;
+float yaw = -90.0f;
+float pitch = 0.0f;
+float lastX = 800.0f / 2.0;
+float lastY = 600.0 / 2.0;
+float fov = 45.0f;
+
+void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
+{
+    float xpos = static_cast<float>(xPosition);
+    float ypos = static_cast<float>(yPosition);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
+}
+
+void GLFW_ScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
+{
+    fov -= (float)yOffset;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 45.0f)
+        fov = 45.0f;
+}
+
 const char *GLFW_ErrorCodeDispatch(int errorCode)
 {
     switch (errorCode)
@@ -128,6 +180,8 @@ int main(void)
     glfwSetErrorCallback(GLFW_ErrorHandler);
     glfwSetKeyCallback(window, GLFW_KeyCallback);
     glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
+    glfwSetCursorPosCallback(window, GLFW_MouseCallback);
+    glfwSetScrollCallback(window, GLFW_ScrollCallback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSwapInterval(1);
 
@@ -213,21 +267,7 @@ int main(void)
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
     shader.SetUniform("u_Texture0", 0);
     shader.SetUniform("u_Texture1", 1);
-
-    float fov = 45.0f;
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model =
-        glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-    glm::mat4 projection = glm::perspective(
-        glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
-
-    glm::mat4 transformation = projection * view * model;
-    shader.SetUniform("u_Transform", transformation);
+    shader.SetUniform("u_Color", glm::vec3(0.9, 0.1, 0.1));
 
 #if 1
     GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
@@ -240,7 +280,7 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -266,6 +306,12 @@ int main(void)
         texture1.BindTo(1);
         shader.Bind();
 
+        glm::mat4 view = glm::mat4(1.0f);
+        view =
+            glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+        glm::mat4 projection = glm::perspective(
+            glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
+
         for (uint64_t i = 0; i < positions.size(); ++i)
         {
             glm::mat4 model = glm::mat4(1.0f);
@@ -275,29 +321,8 @@ int main(void)
                 model, glm::radians(angle) + (float)(glfwGetTime() * 0.01),
                 glm::vec3(1.0f, 0.3f, 0.5f));
 
-            projection = glm::perspective(
-                glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
-
-            // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-            // glm::vec3 cameraDirection =
-            //     glm::normalize(cameraPosition - cameraTarget);
-            // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-            // glm::vec3 cameraRight =
-            //     glm::normalize(glm::cross(up, cameraDirection));
-            // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-            //
-            // const float radius = 10.0f;
-            // float camX = sin(glfwGetTime()) * radius;
-            // float camZ = cos(glfwGetTime()) * radius;
-            // view =
-            //     glm::lookAt(glm::vec3(camX, 0.0, camZ),
-            //                 glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0,
-            //                 0.0));
-            view = glm::lookAt(cameraPosition, cameraPosition + cameraFront,
-                               cameraUp);
-
             shader.SetUniform("u_Transform", projection * view * model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
         }
 
         // GL_Call(
