@@ -84,11 +84,6 @@ void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
     cameraRotation.y += xoffset;
     cameraRotation.x += yoffset;
 
-    // if (pitch > 89.0f)
-    //     pitch = 89.0f;
-    // if (pitch < -89.0f)
-    //     pitch = -89.0f;
-
     glm::vec3 front;
     front.x = cos(glm::radians(cameraRotation.y)) *
               cos(glm::radians(cameraRotation.x));
