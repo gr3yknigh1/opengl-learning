@@ -88,10 +88,24 @@ public:
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(glslVersion);
 
-        s_Instance = MakeRef<Application>();
+        s_Instance = MakeRef<Application>(window);
         s_Instance->PrintDebugInfo();
         s_Instance->ToggleCursor();
         return s_Instance;
+    }
+
+    Application(GLFWwindow *window) : m_Window(window)
+    {
+    }
+
+    ~Application()
+    {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
+        glfwDestroyWindow(m_Window);
+        glfwTerminate();
     }
 
     void ToggleCursor()
@@ -128,27 +142,29 @@ public:
         std::printf("[GL]: Vendor  : %s\n", glVendor);
     }
 
-    constexpr const GLFWwindow *GetWindow() const
+    bool ShouldClose() const
+    {
+        return glfwWindowShouldClose(m_Window);
+    }
+
+    void SwapBuffers()
+    {
+        glfwSwapBuffers(m_Window);
+    }
+
+    void PollEvents()
+    {
+        glfwPollEvents();
+    }
+
+    // TODO: Make `const`
+    constexpr GLFWwindow *GetWindow() const
     {
         return m_Window;
     }
 
 private:
     static inline Ref<Application> s_Instance = nullptr;
-
-    Application(GLFWwindow *window) : m_Window(window)
-    {
-    }
-
-    ~Application()
-    {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-
-        glfwDestroyWindow(m_Window);
-        glfwTerminate();
-    }
 
     static void FrameBufferSizeCallback(GLFWwindow *window, int width,
                                         int height)

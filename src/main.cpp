@@ -31,20 +31,6 @@
 
 Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
-void ToggleCursor(GLFWwindow *window)
-{
-    if (Application::IsCursorEnabled)
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-    else
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
-
-    Application::IsCursorEnabled = !Application::IsCursorEnabled;
-}
-
 void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
 {
     camera.Rotate(xPosition, yPosition);
@@ -55,150 +41,9 @@ void GLFW_ScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
     camera.Zoom(xOffset, yOffset);
 }
 
-const char *GLFW_ErrorCodeDispatch(int errorCode)
-{
-    switch (errorCode)
-    {
-    case GLFW_NOT_INITIALIZED:
-        return STRINGIFY(GLFW_NOT_INITIALIZED);
-    case GLFW_NO_CURRENT_CONTEXT:
-        return STRINGIFY(GLFW_NO_CURRENT_CONTEXT);
-    case GLFW_INVALID_ENUM:
-        return STRINGIFY(GLFW_INVALID_ENUM);
-    case GLFW_OUT_OF_MEMORY:
-        return STRINGIFY(GLFW_OUT_OF_MEMORY);
-    case GLFW_API_UNAVAILABLE:
-        return STRINGIFY(GLFW_API_UNAVAILABLE);
-    case GLFW_VERSION_UNAVAILABLE:
-        return STRINGIFY(GLFW_VERSION_UNAVAILABLE);
-    case GLFW_PLATFORM_ERROR:
-        return STRINGIFY(GLFW_PLATFORM_ERROR);
-    case GLFW_FORMAT_UNAVAILABLE:
-        return STRINGIFY(GLFW_FORMAT_UNAVAILABLE);
-    case GLFW_NO_WINDOW_CONTEXT:
-        return STRINGIFY(GLFW_NO_WINDOW_CONTEXT);
-    default:
-        return "GLFW_UNHANDLED_ERROR";
-    }
-
-    return nullptr;
-}
-
-void GLFW_FrameBufferSizeCallback(GLFWwindow *window, int width, int height)
-{
-    GL_Call(glViewport(0, 0, width, height));
-}
-
-void GLFW_ErrorHandler(int errorCode, const char *description)
-{
-    std::printf("[GLFW]: %s - error code %d, description: '%s'\n",
-                GLFW_ErrorCodeDispatch(errorCode), errorCode, description);
-}
-
-void GLFW_KeyCallback(GLFWwindow *window, int key, int scancode, int action,
-                      int mods)
-{
-    if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) && action == GLFW_PRESS)
-    {
-        GL_Call(glfwSetWindowShouldClose(window, true));
-    }
-
-    if ((key == GLFW_KEY_H || key == GLFW_KEY_ESCAPE) && action == GLFW_PRESS)
-    {
-        ToggleCursor(window);
-    }
-}
-
-void PrintDebugInfo()
-{
-    const unsigned char *glVersion = nullptr;
-    GL_CallO(glGetString(GL_VERSION), &glVersion);
-
-    const unsigned char *glGlslVersion = nullptr;
-    GL_CallO(glGetString(GL_SHADING_LANGUAGE_VERSION), &glGlslVersion);
-
-    const unsigned char *glRendererVersion = nullptr;
-    GL_CallO(glGetString(GL_RENDERER), &glRendererVersion);
-
-    const unsigned char *glVendor = nullptr;
-    GL_CallO(glGetString(GL_VENDOR), &glVendor);
-
-    std::printf("[GLFW]: %s\n", glfwGetVersionString());
-    std::printf("[GL]: OpenGL  : %s, GLSL: %s\n", glVersion, glGlslVersion);
-    std::printf("[GL]: Renderer: %s\n", glRendererVersion);
-    std::printf("[GL]: Vendor  : %s\n", glVendor);
-}
-
 int main(void)
 {
-    if (!glfwInit())
-    {
-        std::printf("[GLFW]: Error! Failed initialize glfw\n");
-        return EXIT_FAILURE;
-    }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // NOTE: For compatibility
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-    const char *title = "Triangle";
-    GLFWwindow *window =
-        glfwCreateWindow(Application::WindowSize.x, Application::WindowSize.y,
-                         title, nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        std::printf("[GLFW]: Error! Failed create window\n");
-        return EXIT_FAILURE;
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSetErrorCallback(GLFW_ErrorHandler);
-    glfwSetKeyCallback(window, GLFW_KeyCallback);
-    glfwSetFramebufferSizeCallback(window, GLFW_FrameBufferSizeCallback);
-    glfwSetCursorPosCallback(window, GLFW_MouseCallback);
-    glfwSetScrollCallback(window, GLFW_ScrollCallback);
-    ToggleCursor(window);
-    glfwSwapInterval(1);
-
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-
-    if (glewInit() != GLEW_OK)
-    {
-        glfwTerminate();
-        std::printf("[GLEW]: Error! Failed initialize glew\n");
-        return EXIT_FAILURE;
-    }
-
-    PrintDebugInfo();
-
-    GL_Call(
-        glViewport(0, 0, Application::WindowSize.x, Application::WindowSize.y));
-    GL_Call(glEnable(GL_BLEND));
-    GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GL_Call(glEnable(GL_DEPTH_TEST));
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    io.Fonts->AddFontDefault();
-    io.ConfigFlags |=
-        ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |=
-        ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsLight();
-
-    // Setup Platform/Renderer backends
-    const char *glslVersion = "#version 130";
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glslVersion);
-
-    // ------------------------------------------------------ //
+    const Ref<Application> app = Application::GetInstance();
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     const std::vector<float> vertices = {
@@ -258,7 +103,7 @@ int main(void)
 
     FrameTimer frameTimer;
 
-    while (!glfwWindowShouldClose(window))
+    while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
 
@@ -266,7 +111,7 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        camera.Update(window, deltaTime);
+        camera.Update(app->GetWindow(), deltaTime);
 
         va.Bind();
         ib.Bind();
@@ -308,18 +153,9 @@ int main(void)
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        app->SwapBuffers();
+        app->PollEvents();
     }
-
-    // ------------------------------------------------------ //
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
 
     return EXIT_SUCCESS;
 }
