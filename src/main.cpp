@@ -26,10 +26,12 @@
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
 
+bool isCursorEnabled = true;
+const glm::vec2 windowSize = {900, 600};
+
 class FrameTimer
 {
 public:
-
     float Tick(void)
     {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -48,6 +50,128 @@ private:
     float m_LastFrameTime;
 };
 
+struct Transform3D
+{
+    Transform3D(const glm::vec3 &position, const glm::vec3 &rotation)
+        : Position(position), Rotation(rotation)
+    {
+    }
+
+    glm::vec3 Position;
+    glm::vec3 Rotation;
+};
+
+template <typename T> struct DiffValue
+{
+    DiffValue(T previous) : Previous(previous)
+    {
+    }
+
+    T Value;
+    T Previous;
+
+    T Set(T newValue)
+    {
+        if (m_FirstAssignment)
+        {
+            Previous = newValue;
+            m_FirstAssignment = false;
+        }
+
+        Value = newValue;
+        Previous = Value;
+        return GetOffset();
+    }
+
+    constexpr T GetOffset(void) const
+    {
+        return Value - Previous;
+    }
+
+private:
+    bool m_FirstAssignment = true;
+};
+
+class Camera3D
+{
+public:
+    Camera3D() = delete;
+    Camera3D(Camera3D &&other) = delete;
+    Camera3D(const Transform3D &transform, float fov = 45,
+             float sensitivity = 0.1, bool isInverse = false)
+        : m_Transform(transform), m_Fov(fov), m_Sensitivity(sensitivity),
+          m_Speed(2.5), m_IsInverse(isInverse), m_Front(0, 0, -1),
+          m_Up(0, 1, 0), m_XPosition(900.0f / 2), m_YPosition(600.0f / 2)
+    {
+    }
+
+    constexpr Transform3D &GetTransform(void)
+    {
+        return m_Transform;
+    }
+
+    void Rotate(float xPosition, float yPosition)
+    {
+        float xOffset = m_XPosition.Set(xPosition) * m_Sensitivity;
+        float yOffset = m_YPosition.Set(yPosition) * m_Sensitivity;
+
+        m_Transform.Rotation.y += xOffset;
+        m_Transform.Rotation.x -= yOffset;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(m_Transform.Rotation.y)) *
+                  cos(glm::radians(m_Transform.Rotation.x));
+        front.y = sin(glm::radians(m_Transform.Rotation.x));
+        front.z = sin(glm::radians(m_Transform.Rotation.y)) *
+                  cos(glm::radians(m_Transform.Rotation.x));
+        m_Front = glm::normalize(front);
+    }
+
+    void Update(GLFWwindow *window, float deltaTime)
+    {
+        if (!isCursorEnabled)
+        {
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+                m_Transform.Position += m_Speed * deltaTime * m_Front;
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+                m_Transform.Position -= m_Speed * deltaTime * m_Front;
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+                m_Transform.Position -=
+                    glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed;
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+                m_Transform.Position +=
+                    glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed;
+        }
+    }
+
+    glm::mat4 GetViewMatrix(void) const
+    {
+        return glm::lookAt(m_Transform.Position, m_Transform.Position + m_Front,
+                           m_Up);
+    }
+
+    glm::mat4 GetProjectionMatrix(void) const
+    {
+        // TODO: Expose to paramteres zNear and zFar
+        return glm::perspective(glm::radians(m_Fov),
+                                windowSize.x / windowSize.y, 0.1f, 100.0f);
+    }
+
+private:
+    Transform3D m_Transform;
+
+    float m_Fov;
+    float m_Sensitivity;
+    float m_Speed;
+    bool m_IsInverse;
+
+    glm::vec3 m_Front;
+    glm::vec3 m_Up;
+
+    DiffValue<float> m_XPosition;
+    DiffValue<float> m_YPosition;
+};
+
 glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -56,11 +180,9 @@ bool firstMouse = true;
 
 // x - pitch, y - yaw, z - roll
 glm::vec3 cameraRotation = {0.0f, -90.0f, 0.0f};
-float lastX = 800.0f / 2.0;
+float lastX = 900.0f / 2.0;
 float lastY = 600.0 / 2.0;
 float fov = 45.0f;
-
-bool isCursorEnabled = true;
 
 void ToggleCursor(GLFWwindow *window)
 {
@@ -92,7 +214,7 @@ void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
     }
 
     float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
+    float yoffset = ypos - lastY;
     lastX = xpos;
     lastY = ypos;
 
@@ -101,7 +223,7 @@ void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
     yoffset *= sensitivity;
 
     cameraRotation.y += xoffset;
-    cameraRotation.x += yoffset;
+    cameraRotation.x -= yoffset;
 
     glm::vec3 front;
     front.x = cos(glm::radians(cameraRotation.y)) *
@@ -211,7 +333,6 @@ int main(void)
     // NOTE: For compatibility
     // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    glm::vec2 windowSize = {900, 600};
     const char *title = "Triangle";
     GLFWwindow *window =
         glfwCreateWindow(windowSize.x, windowSize.y, title, nullptr, nullptr);
@@ -325,10 +446,15 @@ int main(void)
     bool guiWindow = true;
 
     FrameTimer frameTimer;
+    Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
     while (!glfwWindowShouldClose(window))
     {
         float deltaTime = frameTimer.Tick();
+
+        GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
+                             clearColor.a));
+        GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         if (!isCursorEnabled)
         {
@@ -346,10 +472,6 @@ int main(void)
                     glm::normalize(glm::cross(cameraFront, cameraUp)) *
                     cameraSpeed;
         }
-
-        GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
-                             clearColor.a));
-        GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         va.Bind();
         ib.Bind();
