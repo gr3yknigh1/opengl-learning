@@ -1,6 +1,7 @@
 #ifndef CAMERA3D_HPP_
 #define CAMERA3D_HPP_
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
