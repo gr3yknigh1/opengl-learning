@@ -26,12 +26,31 @@
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
 
+class FrameTimer
+{
+public:
+
+    float Tick(void)
+    {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        m_DeltaTime = currentFrame - m_LastFrameTime;
+        m_LastFrameTime = currentFrame;
+        return m_DeltaTime;
+    }
+
+    constexpr float GetDeltaTime(void) const
+    {
+        return m_DeltaTime;
+    }
+
+private:
+    float m_DeltaTime;
+    float m_LastFrameTime;
+};
+
 glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
 
 bool firstMouse = true;
 
@@ -305,11 +324,11 @@ int main(void)
     // ImGUI State
     bool guiWindow = true;
 
+    FrameTimer frameTimer;
+
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        float deltaTime = frameTimer.Tick();
 
         if (!isCursorEnabled)
         {
@@ -349,9 +368,9 @@ int main(void)
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
             float angle = 20.0f * i;
-            model = glm::rotate(
-                model, glm::radians(angle) + (float)(glfwGetTime()),
-                glm::vec3(1.0f, 0.3f, 0.5f));
+            model =
+                glm::rotate(model, glm::radians(angle) + (float)(glfwGetTime()),
+                            glm::vec3(1.0f, 0.3f, 0.5f));
 
             shader.SetUniform("u_Transform", projection * view * model);
             GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
