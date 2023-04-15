@@ -58,38 +58,8 @@ struct Transform3D
     }
 
     glm::vec3 Position;
+    // x - pitch, y - yaw, z - roll
     glm::vec3 Rotation;
-};
-
-template <typename T> struct DiffValue
-{
-    DiffValue(T previous) : Previous(previous)
-    {
-    }
-
-    T Value;
-    T Previous;
-
-    T Set(T newValue)
-    {
-        if (m_FirstAssignment)
-        {
-            Previous = newValue;
-            m_FirstAssignment = false;
-        }
-
-        Value = newValue;
-        Previous = Value;
-        return GetOffset();
-    }
-
-    constexpr T GetOffset(void) const
-    {
-        return Value - Previous;
-    }
-
-private:
-    bool m_FirstAssignment = true;
 };
 
 class Camera3D
@@ -98,10 +68,11 @@ public:
     Camera3D() = delete;
     Camera3D(Camera3D &&other) = delete;
     Camera3D(const Transform3D &transform, float fov = 45,
-             float sensitivity = 0.1, bool isInverse = false)
+             float sensitivity = 0.1, bool isYInverse = false)
         : m_Transform(transform), m_Fov(fov), m_Sensitivity(sensitivity),
-          m_Speed(2.5), m_IsInverse(isInverse), m_Front(0, 0, -1),
-          m_Up(0, 1, 0), m_XPosition(900.0f / 2), m_YPosition(600.0f / 2)
+          m_Speed(2.5), m_IsYInverse(isYInverse), m_Front(0, 0, -1),
+          m_Up(0, 1, 0), m_LastXPosition(900.0f / 2),
+          m_LastYPosition(600.0f / 2), m_FirstLastPositionAssignment(true)
     {
     }
 
@@ -112,36 +83,77 @@ public:
 
     void Rotate(float xPosition, float yPosition)
     {
-        float xOffset = m_XPosition.Set(xPosition) * m_Sensitivity;
-        float yOffset = m_YPosition.Set(yPosition) * m_Sensitivity;
+        if (isCursorEnabled)
+        {
+            return;
+        }
+
+        // TODO: Replace with some kind of struct which holds value and previous
+        // value
+        if (m_FirstLastPositionAssignment)
+        {
+            m_LastXPosition = xPosition;
+            m_LastYPosition = yPosition;
+            m_FirstLastPositionAssignment = false;
+        }
+
+        float xOffset = xPosition - m_LastXPosition;
+        float yOffset = yPosition - m_LastYPosition;
+        m_LastXPosition = xPosition;
+        m_LastYPosition = yPosition;
+
+        xOffset *= m_Sensitivity;
+        yOffset *= m_Sensitivity;
 
         m_Transform.Rotation.y += xOffset;
-        m_Transform.Rotation.x -= yOffset;
+        m_Transform.Rotation.x += yOffset * (m_IsYInverse ? 1 : -1);
 
-        glm::vec3 front;
-        front.x = cos(glm::radians(m_Transform.Rotation.y)) *
-                  cos(glm::radians(m_Transform.Rotation.x));
-        front.y = sin(glm::radians(m_Transform.Rotation.x));
-        front.z = sin(glm::radians(m_Transform.Rotation.y)) *
-                  cos(glm::radians(m_Transform.Rotation.x));
-        m_Front = glm::normalize(front);
+        glm::vec3 newFront;
+        newFront.x = cos(glm::radians(m_Transform.Rotation.y)) *
+                     cos(glm::radians(m_Transform.Rotation.x));
+        newFront.y = sin(glm::radians(m_Transform.Rotation.x));
+        newFront.z = sin(glm::radians(m_Transform.Rotation.y)) *
+                     cos(glm::radians(m_Transform.Rotation.x));
+        m_Front = glm::normalize(newFront);
+    }
+
+    void Zoom(float xOffset, float yOffset)
+    {
+        (void)xOffset;
+
+        if (isCursorEnabled)
+        {
+            return;
+        }
+
+        m_Fov -= (float)yOffset;
+        if (m_Fov < 0.0f)
+        {
+            m_Fov = 0.0f;
+        }
+        if (m_Fov > 360.0f)
+        {
+            m_Fov = 360.0f;
+        }
     }
 
     void Update(GLFWwindow *window, float deltaTime)
     {
-        if (!isCursorEnabled)
+        if (isCursorEnabled)
         {
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-                m_Transform.Position += m_Speed * deltaTime * m_Front;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-                m_Transform.Position -= m_Speed * deltaTime * m_Front;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-                m_Transform.Position -=
-                    glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-                m_Transform.Position +=
-                    glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed;
+            return;
         }
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            m_Transform.Position += m_Speed * deltaTime * m_Front;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            m_Transform.Position -= m_Speed * deltaTime * m_Front;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            m_Transform.Position -=
+                glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            m_Transform.Position +=
+                glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed * deltaTime;
     }
 
     glm::mat4 GetViewMatrix(void) const
@@ -157,32 +169,34 @@ public:
                                 windowSize.x / windowSize.y, 0.1f, 100.0f);
     }
 
+    void DrawImGUI(void)
+    {
+        ImGui::SliderFloat(
+            "FOV", &m_Fov, 0.0f,
+            360.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::InputFloat3("Camera Position",
+                           glm::value_ptr(m_Transform.Position));
+        ImGui::InputFloat3("Camera Rotation",
+                           glm::value_ptr(m_Transform.Rotation));
+    }
+
 private:
     Transform3D m_Transform;
 
     float m_Fov;
     float m_Sensitivity;
     float m_Speed;
-    bool m_IsInverse;
+    bool m_IsYInverse;
 
     glm::vec3 m_Front;
     glm::vec3 m_Up;
 
-    DiffValue<float> m_XPosition;
-    DiffValue<float> m_YPosition;
+    float m_LastXPosition;
+    float m_LastYPosition;
+    bool m_FirstLastPositionAssignment;
 };
 
-glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-bool firstMouse = true;
-
-// x - pitch, y - yaw, z - roll
-glm::vec3 cameraRotation = {0.0f, -90.0f, 0.0f};
-float lastX = 900.0f / 2.0;
-float lastY = 600.0 / 2.0;
-float fov = 45.0f;
+Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
 void ToggleCursor(GLFWwindow *window)
 {
@@ -194,56 +208,18 @@ void ToggleCursor(GLFWwindow *window)
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+
     isCursorEnabled = !isCursorEnabled;
 }
 
 void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
 {
-
-    if (isCursorEnabled)
-        return;
-
-    float xpos = static_cast<float>(xPosition);
-    float ypos = static_cast<float>(yPosition);
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = ypos - lastY;
-    lastX = xpos;
-    lastY = ypos;
-
-    float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    cameraRotation.y += xoffset;
-    cameraRotation.x -= yoffset;
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(cameraRotation.y)) *
-              cos(glm::radians(cameraRotation.x));
-    front.y = sin(glm::radians(cameraRotation.x));
-    front.z = sin(glm::radians(cameraRotation.y)) *
-              cos(glm::radians(cameraRotation.x));
-    cameraFront = glm::normalize(front);
+    camera.Rotate(xPosition, yPosition);
 }
 
 void GLFW_ScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
 {
-    if (isCursorEnabled)
-        return;
-
-    fov -= (float)yOffset;
-    if (fov < 0.0f)
-        fov = 0.0f;
-    if (fov > 360.0f)
-        fov = 360.0f;
+    camera.Zoom(xOffset, yOffset);
 }
 
 const char *GLFW_ErrorCodeDispatch(int errorCode)
@@ -446,7 +422,6 @@ int main(void)
     bool guiWindow = true;
 
     FrameTimer frameTimer;
-    Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -456,22 +431,7 @@ int main(void)
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        if (!isCursorEnabled)
-        {
-            float cameraSpeed = 2.5f * deltaTime;
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-                cameraPosition += cameraSpeed * cameraFront;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-                cameraPosition -= cameraSpeed * cameraFront;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-                cameraPosition -=
-                    glm::normalize(glm::cross(cameraFront, cameraUp)) *
-                    cameraSpeed;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-                cameraPosition +=
-                    glm::normalize(glm::cross(cameraFront, cameraUp)) *
-                    cameraSpeed;
-        }
+        camera.Update(window, deltaTime);
 
         va.Bind();
         ib.Bind();
@@ -480,10 +440,8 @@ int main(void)
         shader.Bind();
 
         glm::mat4 view = glm::mat4(1.0f);
-        view =
-            glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-        glm::mat4 projection = glm::perspective(
-            glm::radians(fov), windowSize.x / windowSize.y, 0.1f, 100.0f);
+        view = camera.GetViewMatrix();
+        glm::mat4 projection = camera.GetProjectionMatrix();
 
         for (uint64_t i = 0; i < positions.size(); ++i)
         {
@@ -508,13 +466,7 @@ int main(void)
         if (guiWindow)
         {
             ImGui::Begin("Options", &guiWindow);
-            ImGui::SliderFloat(
-                "FOV", &fov, 0.0f,
-                360.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::InputFloat3("Camera Position",
-                               glm::value_ptr(cameraPosition));
-            ImGui::InputFloat3("Camera Rotation",
-                               glm::value_ptr(cameraRotation));
+            camera.DrawImGUI();
             ImGui::End();
         }
 
