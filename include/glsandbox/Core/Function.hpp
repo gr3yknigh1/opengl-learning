@@ -40,4 +40,6 @@ private:
   FunctionPointerType m_FunctionPointer;
 };
 
+template <typename... Args> using Proc = Function<void, Args...>;
+
 #endif // FUNCTION_HPP_
