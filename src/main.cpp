@@ -16,7 +16,6 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "glm/ext/matrix_transform.hpp"
 #include "glsandbox/Application.hpp"
 #include "glsandbox/Camera3D.hpp"
 #include "glsandbox/FrameTimer.hpp"
@@ -91,6 +90,8 @@ int main(void)
     };
     VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
 
+    float ambientStrength = 0.1;
+
     VertexArray cubeVa;
     VertexBufferLayout cubeLayout;
     cubeLayout.Pushf(3);
@@ -136,6 +137,7 @@ int main(void)
         cubeShader.Bind();
         cubeShader.SetUniform("u_Color", glm::vec3(.6, .1, .1));
         cubeShader.SetUniform("u_LightColor", lightColor);
+        cubeShader.SetUniform("u_AmbientStr", ambientStrength);
 
         cubeShader.SetUniform("u_Transform",
                               projection * view *
@@ -159,6 +161,7 @@ int main(void)
         {
             ImGui::Begin("Options", &guiWindow);
             camera.DrawImGUI();
+            ImGui::InputFloat("Ambient Strength", &ambientStrength);
             ImGui::End();
         }
 
