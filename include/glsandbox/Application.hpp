@@ -10,9 +10,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "glsandbox/Core/Refs.hpp"
 #include "glsandbox/Events/Event.hpp"
 #include "glsandbox/GLUtils.hpp"
-#include "glsandbox/Core/Refs.hpp"
 #include "glsandbox/Window.hpp"
 #include "glsandbox/defs.hpp"
 
@@ -21,6 +21,10 @@ class Application
 public:
     static inline bool IsCursorEnabled = true;
     static inline const glm::vec2 WindowSize = {900, 600};
+
+    static inline Event<GLFWwindow *, int, int, int, int> KeyboardEvent;
+    static inline Event<GLFWwindow *, double, double> MouseEvent;
+    static inline Event<GLFWwindow *, double, double> ScrollEvent;
 
     static Ref<Application> GetInstance(void)
     {
@@ -184,6 +188,8 @@ private:
     static void KeyCallback(GLFWwindow *window, int key, int scancode,
                             int action, int mods)
     {
+        KeyboardEvent.Invoke(window, key, scancode, action, mods);
+
         if ((key == GLFW_KEY_Q || key == GLFW_KEY_ESCAPE) &&
             action == GLFW_PRESS)
         {
@@ -229,11 +235,13 @@ private:
     static void MouseCallback(GLFWwindow *window, double xPosition,
                               double yPosition)
     {
+        MouseEvent.Invoke(window, xPosition, yPosition);
     }
 
     static void ScrollCallback(GLFWwindow *window, double xOffset,
                                double yOffset)
     {
+        ScrollEvent.Invoke(window, xOffset, yOffset);
     }
 
     GLFWwindow *m_Window;

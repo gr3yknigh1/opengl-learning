@@ -21,8 +21,8 @@ IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices)
     GL_Call(glGenBuffers(1, &m_Id));
     Bind();
     GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         static_cast<long>(m_Count * sizeof(uint32_t)), indices.data(),
-                         GL_STATIC_DRAW));
+                         static_cast<long>(m_Count * sizeof(uint32_t)),
+                         indices.data(), GL_STATIC_DRAW));
 }
 
 void IndexBuffer::Bind() const

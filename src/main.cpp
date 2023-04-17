@@ -29,21 +29,11 @@
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
 
-Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
-
-void GLFW_MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
-{
-    camera.Rotate(xPosition, yPosition);
-}
-
-void GLFW_ScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
-{
-    camera.Zoom(xOffset, yOffset);
-}
 
 int main(void)
 {
     const Ref<Application> app = Application::GetInstance();
+    Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     const std::vector<float> vertices = {
@@ -103,15 +93,25 @@ int main(void)
 
     FrameTimer frameTimer;
 
+    app->MouseEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
+        [&](GLFWwindow *window, double xPosition, double yPosition) {
+            camera.Rotate(xPosition, yPosition);
+        }));
+
+    app->ScrollEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
+        [&](GLFWwindow *window, double xOffset, double yOffset) {
+            camera.Zoom(xOffset, yOffset);
+        }));
+
     while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
 
+        camera.Update(app->GetWindow(), deltaTime);
+
         GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
                              clearColor.a));
         GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-        camera.Update(app->GetWindow(), deltaTime);
 
         va.Bind();
         ib.Bind();
@@ -135,9 +135,6 @@ int main(void)
             shader.SetUniform("u_Transform", projection * view * model);
             GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
         }
-
-        // GL_Call(
-        //     glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
