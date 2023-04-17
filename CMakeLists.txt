@@ -15,10 +15,10 @@ file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${SOURCES_DIR}/*.cpp")
 
 add_definitions(-DGLEW_STATIC)
 
-add_subdirectory("${VENDOR_DIR}/glew"   EXCLUDE_FROM_ALL)
-add_subdirectory("${VENDOR_DIR}/glfw"   EXCLUDE_FROM_ALL)
-add_subdirectory("${VENDOR_DIR}/fmt"    EXCLUDE_FROM_ALL)
-add_subdirectory("${VENDOR_DIR}/imgui"    EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/glew"  EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/glfw"  EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/fmt"   EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/imgui" EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME} "${SOURCES_DIR}/main.cpp")
 

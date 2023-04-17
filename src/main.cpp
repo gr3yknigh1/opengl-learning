@@ -12,11 +12,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "glm/ext/matrix_transform.hpp"
 #include "glsandbox/Application.hpp"
 #include "glsandbox/Camera3D.hpp"
 #include "glsandbox/FrameTimer.hpp"
@@ -35,54 +35,6 @@ int main(void)
     const Ref<Application> app = Application::GetInstance();
     Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
-    const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    const std::vector<float> vertices = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 0.0f,
-        0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, 0.5f,  -0.5f, 0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f, 0.5f,  0.5f,  0.0f, 1.0f, -0.5f, -0.5f, 0.5f,  0.0f, 0.0f,
-        -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-        0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.5f,  -0.5f, -0.5f, 0.0f, 1.0f,
-        0.5f,  -0.5f, 0.5f,  0.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 1.0f,
-        0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.5f,  -0.5f, 0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-        -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f};
-
-    const std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
-    const std::vector<glm::vec3> positions{
-        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f)};
-
-    Texture texture0(ASSETS_DIR "/textures/container.jpg");
-
-    VertexArray va;
-    VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
-    IndexBuffer ib(indices);
-    VertexBufferLayout layout;
-    layout.Pushf(3);
-    layout.Pushf(2);
-    va.AddBuffer(vb, layout);
-
-    Shader shader =
-        Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
-                                ASSETS_DIR "/shaders/basic_fragment.glsl");
-    shader.SetUniform("u_Texture0", 0);
-    shader.SetUniform("u_Color", glm::vec3(1, 1, 1));
-
-    // ImGUI State
-    bool guiWindow = true;
-
-    FrameTimer frameTimer;
-
     app->MouseEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
         [&](GLFWwindow *window, double xPosition, double yPosition) {
             camera.Rotate(xPosition, yPosition);
@@ -92,6 +44,79 @@ int main(void)
         [&](GLFWwindow *window, double xOffset, double yOffset) {
             camera.Zoom(xOffset, yOffset);
         }));
+
+    const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
+    const std::vector<float> vertices = {
+        -0.5f, -0.5f, -0.5f, //
+        0.5f,  -0.5f, -0.5f, //
+        0.5f,  0.5f,  -0.5f, //
+        0.5f,  0.5f,  -0.5f, //
+        -0.5f, 0.5f,  -0.5f, //
+        -0.5f, -0.5f, -0.5f, //
+
+        -0.5f, -0.5f, 0.5f, //
+        0.5f,  -0.5f, 0.5f, //
+        0.5f,  0.5f,  0.5f, //
+        0.5f,  0.5f,  0.5f, //
+        -0.5f, 0.5f,  0.5f, //
+        -0.5f, -0.5f, 0.5f, //
+
+        -0.5f, 0.5f,  0.5f,  //
+        -0.5f, 0.5f,  -0.5f, //
+        -0.5f, -0.5f, -0.5f, //
+        -0.5f, -0.5f, -0.5f, //
+        -0.5f, -0.5f, 0.5f,  //
+        -0.5f, 0.5f,  0.5f,  //
+
+        0.5f,  0.5f,  0.5f,  //
+        0.5f,  0.5f,  -0.5f, //
+        0.5f,  -0.5f, -0.5f, //
+        0.5f,  -0.5f, -0.5f, //
+        0.5f,  -0.5f, 0.5f,  //
+        0.5f,  0.5f,  0.5f,  //
+
+        -0.5f, -0.5f, -0.5f, //
+        0.5f,  -0.5f, -0.5f, //
+        0.5f,  -0.5f, 0.5f,  //
+        0.5f,  -0.5f, 0.5f,  //
+        -0.5f, -0.5f, 0.5f,  //
+        -0.5f, -0.5f, -0.5f, //
+
+        -0.5f, 0.5f,  -0.5f, //
+        0.5f,  0.5f,  -0.5f, //
+        0.5f,  0.5f,  0.5f,  //
+        0.5f,  0.5f,  0.5f,  //
+        -0.5f, 0.5f,  0.5f,  //
+        -0.5f, 0.5f,  -0.5f, //
+    };
+    VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
+
+    VertexArray cubeVa;
+    VertexBufferLayout cubeLayout;
+    cubeLayout.Pushf(3);
+    cubeVa.AddBuffer(vb, cubeLayout);
+
+    glm::vec3 cubeColor = {0.7, 0.2, 0.2};
+    glm::vec3 cubePosition = {5, 0, 0};
+
+    Shader cubeShader =
+        Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
+                                ASSETS_DIR "/shaders/basic_fragment.glsl");
+
+    VertexArray lampVa;
+    VertexBufferLayout lampLayout;
+    lampLayout.Pushf(3);
+    lampVa.AddBuffer(vb, lampLayout);
+
+    glm::vec3 lightColor(1, 1, 1);
+    glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
+
+    Shader lampShader =
+        Shader::FromSourceFiles(ASSETS_DIR "/shaders/light_vertex.glsl",
+                                ASSETS_DIR "/shaders/light_fragment.glsl");
+
+    bool guiWindow = true;
+    FrameTimer frameTimer;
 
     Renderer::SetClearColor({.1, .1, .1, 1});
 
@@ -104,27 +129,25 @@ int main(void)
         Renderer::BeginDraw(camera);
         Renderer::Clear();
 
-        va.Bind();
-        ib.Bind();
-        texture0.BindTo(0);
-        shader.Bind();
-
-        glm::mat4 view = glm::mat4(1.0f);
-        view = camera.GetViewMatrix();
         glm::mat4 projection = camera.GetProjectionMatrix();
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 model = glm::mat4(1.0);
 
-        for (uint64_t i = 0; i < positions.size(); ++i)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, positions[i]);
-            float angle = 20.0f * i;
-            model =
-                glm::rotate(model, glm::radians(angle) + (float)(glfwGetTime()),
-                            glm::vec3(1.0f, 0.3f, 0.5f));
+        cubeShader.Bind();
+        cubeShader.SetUniform("u_Color", glm::vec3(.6, .1, .1));
+        cubeShader.SetUniform("u_LightColor", lightColor);
 
-            shader.SetUniform("u_Transform", projection * view * model);
-            GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
-        }
+        cubeShader.SetUniform("u_Transform",
+                              projection * view *
+                                  glm::translate(model, cubePosition));
+        cubeVa.Bind();
+        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
+
+        lampShader.Bind();
+        lampShader.SetUniform("u_Transform",
+                              projection * view *
+                                  glm::translate(model, lampPosition));
+        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
 
         Renderer::EndDraw();
 
