@@ -63,7 +63,6 @@ int main(void)
         glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f)};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
-    Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
 
     VertexArray va;
     VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
@@ -77,8 +76,7 @@ int main(void)
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
                                 ASSETS_DIR "/shaders/basic_fragment.glsl");
     shader.SetUniform("u_Texture0", 0);
-    shader.SetUniform("u_Texture1", 1);
-    shader.SetUniform("u_Color", glm::vec3(0.9, 0.1, 0.1));
+    shader.SetUniform("u_Color", glm::vec3(1, 1, 1));
 
     // ImGUI State
     bool guiWindow = true;
@@ -109,7 +107,6 @@ int main(void)
         va.Bind();
         ib.Bind();
         texture0.BindTo(0);
-        texture1.BindTo(1);
         shader.Bind();
 
         glm::mat4 view = glm::mat4(1.0f);
