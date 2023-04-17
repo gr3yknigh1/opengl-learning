@@ -80,6 +80,7 @@ public:
         GL_Call(glEnable(GL_BLEND));
         GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         GL_Call(glEnable(GL_DEPTH_TEST));
+        GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();

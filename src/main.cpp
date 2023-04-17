@@ -22,13 +22,13 @@
 #include "glsandbox/FrameTimer.hpp"
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/IndexBuffer.hpp"
+#include "glsandbox/Renderer/Renderer.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
 #include "glsandbox/Transform3D.hpp"
 #include "glsandbox/VertexArray.hpp"
 #include "glsandbox/VertexBufferLayout.hpp"
 #include "glsandbox/defs.hpp"
-
 
 int main(void)
 {
@@ -60,9 +60,7 @@ int main(void)
     const std::vector<glm::vec3> positions{
         glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f)};
 
     Texture texture0(ASSETS_DIR "/textures/container.jpg");
     Texture texture1(ASSETS_DIR "/textures/awesomeface.png");
@@ -82,12 +80,6 @@ int main(void)
     shader.SetUniform("u_Texture1", 1);
     shader.SetUniform("u_Color", glm::vec3(0.9, 0.1, 0.1));
 
-#if 1
-    GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-#else
-    GL_Call(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
-#endif
-
     // ImGUI State
     bool guiWindow = true;
 
@@ -103,15 +95,16 @@ int main(void)
             camera.Zoom(xOffset, yOffset);
         }));
 
+    Renderer::SetClearColor({.1, .1, .1, 1});
+
     while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
 
         camera.Update(app->GetWindow(), deltaTime);
 
-        GL_Call(glClearColor(clearColor.r, clearColor.b, clearColor.g,
-                             clearColor.a));
-        GL_Call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+        Renderer::BeginDraw(camera);
+        Renderer::Clear();
 
         va.Bind();
         ib.Bind();
@@ -135,6 +128,8 @@ int main(void)
             shader.SetUniform("u_Transform", projection * view * model);
             GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
         }
+
+        Renderer::EndDraw();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

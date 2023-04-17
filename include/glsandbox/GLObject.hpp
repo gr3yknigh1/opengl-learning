@@ -6,7 +6,10 @@
 class GLObject
 {
 public:
-    constexpr uint32_t GetId() const;
+    constexpr uint32_t GetId() const
+    {
+        return m_Id;
+    }
 
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
