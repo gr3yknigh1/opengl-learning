@@ -46,54 +46,57 @@ int main(void)
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     const std::vector<float> vertices = {
-        -0.5f, -0.5f, -0.5f, //
-        0.5f,  -0.5f, -0.5f, //
-        0.5f,  0.5f,  -0.5f, //
-        0.5f,  0.5f,  -0.5f, //
-        -0.5f, 0.5f,  -0.5f, //
-        -0.5f, -0.5f, -0.5f, //
+        -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  -1.0f, //
+        0.5f,  -0.5f, -0.5f, 0.0f,  0.0f,  -1.0f, //
+        0.5f,  0.5f,  -0.5f, 0.0f,  0.0f,  -1.0f, //
+        0.5f,  0.5f,  -0.5f, 0.0f,  0.0f,  -1.0f, //
+        -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f,  -1.0f, //
+        -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  -1.0f, //
 
-        -0.5f, -0.5f, 0.5f, //
-        0.5f,  -0.5f, 0.5f, //
-        0.5f,  0.5f,  0.5f, //
-        0.5f,  0.5f,  0.5f, //
-        -0.5f, 0.5f,  0.5f, //
-        -0.5f, -0.5f, 0.5f, //
+        -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f, //
+        0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  1.0f, //
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, //
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, //
+        -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  1.0f, //
+        -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f, //
 
-        -0.5f, 0.5f,  0.5f,  //
-        -0.5f, 0.5f,  -0.5f, //
-        -0.5f, -0.5f, -0.5f, //
-        -0.5f, -0.5f, -0.5f, //
-        -0.5f, -0.5f, 0.5f,  //
-        -0.5f, 0.5f,  0.5f,  //
+        -0.5f, 0.5f,  0.5f,  -1.0f, 0.0f,  0.0f, //
+        -0.5f, 0.5f,  -0.5f, -1.0f, 0.0f,  0.0f, //
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f,  0.0f, //
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f,  0.0f, //
+        -0.5f, -0.5f, 0.5f,  -1.0f, 0.0f,  0.0f, //
+        -0.5f, 0.5f,  0.5f,  -1.0f, 0.0f,  0.0f, //
 
-        0.5f,  0.5f,  0.5f,  //
-        0.5f,  0.5f,  -0.5f, //
-        0.5f,  -0.5f, -0.5f, //
-        0.5f,  -0.5f, -0.5f, //
-        0.5f,  -0.5f, 0.5f,  //
-        0.5f,  0.5f,  0.5f,  //
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, //
+        0.5f,  0.5f,  -0.5f, 1.0f,  0.0f,  0.0f, //
+        0.5f,  -0.5f, -0.5f, 1.0f,  0.0f,  0.0f, //
+        0.5f,  -0.5f, -0.5f, 1.0f,  0.0f,  0.0f, //
+        0.5f,  -0.5f, 0.5f,  1.0f,  0.0f,  0.0f, //
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, //
 
-        -0.5f, -0.5f, -0.5f, //
-        0.5f,  -0.5f, -0.5f, //
-        0.5f,  -0.5f, 0.5f,  //
-        0.5f,  -0.5f, 0.5f,  //
-        -0.5f, -0.5f, 0.5f,  //
-        -0.5f, -0.5f, -0.5f, //
+        -0.5f, -0.5f, -0.5f, 0.0f,  -1.0f, 0.0f, //
+        0.5f,  -0.5f, -0.5f, 0.0f,  -1.0f, 0.0f, //
+        0.5f,  -0.5f, 0.5f,  0.0f,  -1.0f, 0.0f, //
+        0.5f,  -0.5f, 0.5f,  0.0f,  -1.0f, 0.0f, //
+        -0.5f, -0.5f, 0.5f,  0.0f,  -1.0f, 0.0f, //
+        -0.5f, -0.5f, -0.5f, 0.0f,  -1.0f, 0.0f, //
 
-        -0.5f, 0.5f,  -0.5f, //
-        0.5f,  0.5f,  -0.5f, //
-        0.5f,  0.5f,  0.5f,  //
-        0.5f,  0.5f,  0.5f,  //
-        -0.5f, 0.5f,  0.5f,  //
-        -0.5f, 0.5f,  -0.5f, //
+        -0.5f, 0.5f,  -0.5f, 0.0f,  1.0f,  0.0f, //
+        0.5f,  0.5f,  -0.5f, 0.0f,  1.0f,  0.0f, //
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, //
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, //
+        -0.5f, 0.5f,  0.5f,  0.0f,  1.0f,  0.0f, //
+        -0.5f, 0.5f,  -0.5f, 0.0f,  1.0f,  0.0f  //
     };
     VertexBuffer vb(vertices);
 
     float ambientStrength = 0.1;
+    float specularStrength = 0.5;
+    int specularShininess = 32;
 
     VertexArray cubeVa;
     VertexBufferLayout cubeLayout;
+    cubeLayout.Pushf(3);
     cubeLayout.Pushf(3);
     cubeVa.AddBuffer(vb, cubeLayout);
 
@@ -137,11 +140,15 @@ int main(void)
         cubeShader.Bind();
         cubeShader.SetUniform("u_Color", glm::vec3(.6, .1, .1));
         cubeShader.SetUniform("u_LightColor", lightColor);
+        cubeShader.SetUniform("u_LightPosition", lampPosition);
         cubeShader.SetUniform("u_AmbientStr", ambientStrength);
-
-        cubeShader.SetUniform("u_Transform",
-                              projection * view *
-                                  glm::translate(model, cubePosition));
+        cubeShader.SetUniform("u_SpecularStr", specularStrength);
+        cubeShader.SetUniform("u_SpecularShininess", specularShininess);
+        cubeShader.SetUniform("u_CameraPosition",
+                              camera.GetTransform().Position);
+        cubeShader.SetUniform("u_Model", glm::translate(model, cubePosition));
+        cubeShader.SetUniform("u_View", view);
+        cubeShader.SetUniform("u_Projection", projection);
         cubeVa.Bind();
         GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
 
@@ -161,7 +168,13 @@ int main(void)
         {
             ImGui::Begin("Options", &guiWindow);
             camera.DrawImGUI();
-            ImGui::InputFloat("Ambient Strength", &ambientStrength);
+            ImGui::SliderFloat("Ambient Strength", &ambientStrength, 0, 1);
+            ImGui::SliderFloat("Specular Strength", &specularStrength, 0, 1);
+            ImGui::SliderFloat3("Cube position", glm::value_ptr(cubePosition),
+                                -10, 10);
+            ImGui::SliderFloat3("Lamp position", glm::value_ptr(lampPosition),
+                                -10, 10);
+            ImGui::InputInt("Specular Shininess", &specularShininess);
             ImGui::End();
         }
 
