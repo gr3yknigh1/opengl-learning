@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
+#include <cmath>
 #include <vector>
 
 #include <GL/glew.h>
@@ -101,7 +102,7 @@ int main(void)
     cubeVa.AddBuffer(vb, cubeLayout);
 
     glm::vec3 cubeColor = {0.7, 0.2, 0.2};
-    glm::vec3 cubePosition = {5, 0, 0};
+    glm::vec3 cubePosition = {5, 0, 5};
 
     Shader cubeShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
@@ -112,8 +113,9 @@ int main(void)
     lampLayout.Pushf(3);
     lampVa.AddBuffer(vb, lampLayout);
 
-    glm::vec3 lightColor(1, 1, 1);
+    glm::vec3 lampColor(1, 1, 1);
     glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
+    unsigned long lampSpeed = 5;
 
     Shader lampShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/light_vertex.glsl",
@@ -130,6 +132,8 @@ int main(void)
 
         camera.Update(app->GetWindow(), deltaTime);
 
+        lampPosition.z += lampSpeed * deltaTime * std::sin(glfwGetTime());
+
         Renderer::BeginDraw(camera);
         Renderer::Clear();
 
@@ -139,7 +143,7 @@ int main(void)
 
         cubeShader.Bind();
         cubeShader.SetUniform("u_Color", glm::vec3(.6, .1, .1));
-        cubeShader.SetUniform("u_LightColor", lightColor);
+        cubeShader.SetUniform("u_LightColor", lampColor);
         cubeShader.SetUniform("u_LightPosition", lampPosition);
         cubeShader.SetUniform("u_AmbientStr", ambientStrength);
         cubeShader.SetUniform("u_SpecularStr", specularStrength);
@@ -167,6 +171,8 @@ int main(void)
         if (guiWindow)
         {
             ImGui::Begin("Options", &guiWindow);
+            ImGui::Text("GLFW Time: %lf", glfwGetTime());
+
             camera.DrawImGUI();
             ImGui::SliderFloat("Ambient Strength", &ambientStrength, 0, 1);
             ImGui::SliderFloat("Specular Strength", &specularStrength, 0, 1);
