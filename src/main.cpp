@@ -88,7 +88,7 @@ int main(void)
         -0.5f, 0.5f,  0.5f,  //
         -0.5f, 0.5f,  -0.5f, //
     };
-    VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
+    VertexBuffer vb(vertices);
 
     float ambientStrength = 0.1;
 

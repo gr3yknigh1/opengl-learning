@@ -1,4 +1,5 @@
 #include "glsandbox/VertexBuffer.hpp"
+#include <cstddef>
 
 VertexBuffer::VertexBuffer(const void *data, const std::size_t size)
 {
