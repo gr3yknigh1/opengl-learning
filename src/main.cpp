@@ -97,8 +97,8 @@ int main(void)
 
     VertexArray cubeVa;
     VertexBufferLayout cubeLayout;
-    cubeLayout.Pushf(3);
-    cubeLayout.Pushf(3);
+    cubeLayout.PushFloat(3);
+    cubeLayout.PushFloat(3);
     cubeVa.AddBuffer(vb, cubeLayout);
 
     glm::vec3 cubeColor = {0.7, 0.2, 0.2};
@@ -110,7 +110,7 @@ int main(void)
 
     VertexArray lampVa;
     VertexBufferLayout lampLayout;
-    lampLayout.Pushf(3);
+    lampLayout.PushFloat(3);
     lampVa.AddBuffer(vb, lampLayout);
 
     glm::vec3 lampColor(1, 1, 1);

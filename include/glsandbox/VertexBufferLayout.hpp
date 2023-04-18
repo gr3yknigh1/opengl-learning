@@ -14,7 +14,7 @@ public:
 
     std::size_t GetStride() const;
 
-    void Pushf(const uint32_t count);
+    void PushFloat(const uint32_t count);
 
 private:
     std::vector<VertexBufferAttribute> m_Attributes;

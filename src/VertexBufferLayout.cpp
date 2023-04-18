@@ -18,7 +18,7 @@ std::size_t VertexBufferLayout::GetStride() const
 }
 
 // TODO: Implement size
-void VertexBufferLayout::Pushf(const uint32_t count)
+void VertexBufferLayout::PushFloat(const uint32_t count)
 {
     const auto size = sizeof(GLfloat);
     m_Attributes.push_back(VertexBufferAttribute(GL_FLOAT, count, size, false));
