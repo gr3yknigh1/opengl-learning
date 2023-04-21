@@ -8,7 +8,7 @@
 class Renderer
 {
 public:
-    static void BeginDraw(const Camera3D& camera);
+    static void BeginDraw(const Camera3D &camera);
 
     static void SetClearColor(const glm::vec4 &clearColor);
     static void SetClearColor(float r, float g, float b, float a);
