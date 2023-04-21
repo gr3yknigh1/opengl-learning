@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
-#include <cmath>
 #include <vector>
 
 #include <GL/glew.h>
@@ -17,6 +16,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "glm/ext/matrix_transform.hpp"
 #include "glsandbox/Application.hpp"
 #include "glsandbox/Camera3D.hpp"
 #include "glsandbox/FrameTimer.hpp"
@@ -102,7 +102,7 @@ int main(void)
     cubeVa.AddBuffer(vb, cubeLayout);
 
     glm::vec3 cubeColor = {0.7, 0.2, 0.2};
-    glm::vec3 cubePosition = {5, 0, 5};
+    glm::vec3 cubePosition = {5, -5, 5};
 
     Shader cubeShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
@@ -110,6 +110,7 @@ int main(void)
 
     VertexArray lampVa;
     VertexBufferLayout lampLayout;
+    lampLayout.PushFloat(3);
     lampLayout.PushFloat(3);
     lampVa.AddBuffer(vb, lampLayout);
 
@@ -142,7 +143,7 @@ int main(void)
         glm::mat4 model = glm::mat4(1.0);
 
         cubeShader.Bind();
-        cubeShader.SetUniform("u_Color", glm::vec3(.6, .1, .1));
+        cubeShader.SetUniform("u_Color", cubeColor);
         cubeShader.SetUniform("u_LightColor", lampColor);
         cubeShader.SetUniform("u_LightPosition", lampPosition);
         cubeShader.SetUniform("u_AmbientStr", ambientStrength);
@@ -150,7 +151,9 @@ int main(void)
         cubeShader.SetUniform("u_SpecularShininess", specularShininess);
         cubeShader.SetUniform("u_CameraPosition",
                               camera.GetTransform().Position);
-        cubeShader.SetUniform("u_Model", glm::translate(model, cubePosition));
+        cubeShader.SetUniform(
+            "u_Model",
+            glm::scale(glm::translate(model, cubePosition), {20, 0.5, 20}));
         cubeShader.SetUniform("u_View", view);
         cubeShader.SetUniform("u_Projection", projection);
         cubeVa.Bind();
@@ -160,6 +163,7 @@ int main(void)
         lampShader.SetUniform("u_Transform",
                               projection * view *
                                   glm::translate(model, lampPosition));
+        lampVa.Bind();
         GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
 
         Renderer::EndDraw();
@@ -178,8 +182,10 @@ int main(void)
             ImGui::SliderFloat("Specular Strength", &specularStrength, 0, 1);
             ImGui::SliderFloat3("Cube position", glm::value_ptr(cubePosition),
                                 -10, 10);
+            ImGui::SliderFloat3("Cube color", glm::value_ptr(cubeColor), 0, 1);
             ImGui::SliderFloat3("Lamp position", glm::value_ptr(lampPosition),
                                 -10, 10);
+            ImGui::SliderFloat3("Lamp color", glm::value_ptr(lampColor), 0, 1);
             ImGui::InputInt("Specular Shininess", &specularShininess);
             ImGui::End();
         }

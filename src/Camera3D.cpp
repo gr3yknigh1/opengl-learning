@@ -1,11 +1,12 @@
 #include "glsandbox/Camera3D.hpp"
+#include "GLFW/glfw3.h"
 
 Camera3D::Camera3D(const Transform3D &transform, float fov, float sensitivity,
-                   bool isYInverse)
+                   bool isYInverse, float speed, float speedModifier)
     : m_Transform(transform), m_Fov(fov), m_Sensitivity(sensitivity),
-      m_Speed(2.5), m_IsYInverse(isYInverse), m_Front(0, 0, -1), m_Up(0, 1, 0),
-      m_LastXPosition(900.0f / 2), m_LastYPosition(600.0f / 2),
-      m_FirstLastPositionAssignment(true)
+      m_Speed(speed), m_SpeedModifier(speedModifier), m_IsYInverse(isYInverse),
+      m_Front(0, 0, -1), m_Up(0, 1, 0), m_LastXPosition(900.0f / 2),
+      m_LastYPosition(600.0f / 2), m_FirstLastPositionAssignment(true)
 {
 }
 
@@ -77,16 +78,34 @@ void Camera3D::Update(GLFWwindow *window, float deltaTime)
         return;
     }
 
+    float currentSpeed = m_Speed;
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        currentSpeed *= m_SpeedModifier;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        m_Transform.Position += m_Speed * deltaTime * m_Front;
+    {
+        m_Transform.Position += currentSpeed * deltaTime * m_Front;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        m_Transform.Position -= m_Speed * deltaTime * m_Front;
+    {
+        m_Transform.Position -= currentSpeed * deltaTime * m_Front;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        m_Transform.Position -=
-            glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed * deltaTime;
+    {
+        m_Transform.Position -= glm::normalize(glm::cross(m_Front, m_Up)) *
+                                currentSpeed * deltaTime;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        m_Transform.Position +=
-            glm::normalize(glm::cross(m_Front, m_Up)) * m_Speed * deltaTime;
+    {
+        m_Transform.Position += glm::normalize(glm::cross(m_Front, m_Up)) *
+                                currentSpeed * deltaTime;
+    }
 }
 
 glm::mat4 Camera3D::GetViewMatrix(void) const
