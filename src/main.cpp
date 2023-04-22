@@ -91,6 +91,7 @@ int main(void)
     };
     VertexBuffer vb(vertices);
 
+    glm::vec3 ambientColor = {1, 1, 1};
     float ambientStrength = 0.1;
     float specularStrength = 0.5;
     int specularShininess = 32;
@@ -146,6 +147,7 @@ int main(void)
         cubeShader.SetUniform("u_Color", cubeColor);
         cubeShader.SetUniform("u_LightColor", lampColor);
         cubeShader.SetUniform("u_LightPosition", lampPosition);
+        cubeShader.SetUniform("u_AmbientColor", ambientColor);
         cubeShader.SetUniform("u_AmbientStr", ambientStrength);
         cubeShader.SetUniform("u_SpecularStr", specularStrength);
         cubeShader.SetUniform("u_SpecularShininess", specularShininess);
@@ -178,14 +180,15 @@ int main(void)
             ImGui::Text("GLFW Time: %lf", glfwGetTime());
 
             camera.DrawImGUI();
+            ImGui::ColorEdit3("Ambient color", glm::value_ptr(ambientColor));
             ImGui::SliderFloat("Ambient Strength", &ambientStrength, 0, 1);
             ImGui::SliderFloat("Specular Strength", &specularStrength, 0, 1);
             ImGui::SliderFloat3("Cube position", glm::value_ptr(cubePosition),
                                 -10, 10);
-            ImGui::SliderFloat3("Cube color", glm::value_ptr(cubeColor), 0, 1);
+            ImGui::ColorEdit3("Cube color", glm::value_ptr(cubeColor));
             ImGui::SliderFloat3("Lamp position", glm::value_ptr(lampPosition),
                                 -10, 10);
-            ImGui::SliderFloat3("Lamp color", glm::value_ptr(lampColor), 0, 1);
+            ImGui::ColorEdit3("Lamp color", glm::value_ptr(lampColor));
             ImGui::InputInt("Specular Shininess", &specularShininess);
             ImGui::End();
         }

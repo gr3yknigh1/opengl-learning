@@ -5,6 +5,7 @@ out vec4 FragColor;
 in vec3 o_Normal;
 in vec3 o_FragPosition;
 
+uniform vec3 u_AmbientColor;
 uniform float u_AmbientStr;
 uniform vec3 u_Color;
 uniform vec3 u_LightColor;
@@ -16,7 +17,7 @@ uniform int u_SpecularShininess;
 void main()
 {
     // Ambient
-    vec3 ambientLight = u_AmbientStr * u_LightColor;
+    vec3 ambientLight = u_AmbientStr * u_AmbientColor;
 
     // Diffuse
     vec3 normalVector = normalize(o_Normal);
