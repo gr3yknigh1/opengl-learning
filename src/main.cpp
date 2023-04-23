@@ -122,23 +122,6 @@ int main(void)
     FrameTimer frameTimer;
 
     Renderer::SetClearColor({.1, .1, .1, 1});
-
-    float ambientStr = 0.2f;
-    float diffuseStr = 0.5f;
-
-    glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
-    glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
-
-    glm::vec3 lightAmbient = ambientColor;
-    glm::vec3 lightDiffuse = diffuseColor;
-    glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
-
-    glm::vec3 materialAmbient = {1.0f, 0.5f, 0.31f};
-    glm::vec3 materialDiffuse = {1.0f, 0.5f, 0.31f};
-    glm::vec3 materialSpecular = {0.5f, 0.5f, 0.5f};
-
-    float shininess = 32.0f;
-
     while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
@@ -153,6 +136,22 @@ int main(void)
         glm::mat4 projection = camera.GetProjectionMatrix();
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0);
+
+        float ambientStr = 0.2f;
+        float diffuseStr = 0.5f;
+
+        glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
+
+        glm::vec3 lightAmbient = ambientColor;
+        glm::vec3 lightDiffuse = diffuseColor;
+        glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
+
+        glm::vec3 materialAmbient = {1.0f, 0.5f, 0.31f};
+        glm::vec3 materialDiffuse = {1.0f, 0.5f, 0.31f};
+        glm::vec3 materialSpecular = {0.5f, 0.5f, 0.5f};
+
+        float shininess = 32.0f;
 
         cubeShader.Bind();
         cubeShader.SetUniform("light.position", lampPosition);
