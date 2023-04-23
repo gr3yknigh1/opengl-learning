@@ -91,12 +91,6 @@ int main(void)
     };
     VertexBuffer vb(vertices);
 
-    glm::vec3 ambientColor = {1, 1, 1};
-    glm::vec3 ambient = {1.0f, 0.5f, 0.31f};
-    glm::vec3 diffuse = {1.0f, 0.5f, 0.31f};
-    glm::vec3 specular = {0.5, 0.5, 0.5};
-    float specularShininess = 32;
-
     VertexArray cubeVa;
     VertexBufferLayout cubeLayout;
     cubeLayout.PushFloat(3);
@@ -116,7 +110,7 @@ int main(void)
     lampLayout.PushFloat(3);
     lampVa.AddBuffer(vb, lampLayout);
 
-    glm::vec3 lampColor(1, 1, 1);
+    glm::vec3 lightColor(1, 1, 1);
     glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
     unsigned long lampSpeed = 5;
 
@@ -128,6 +122,22 @@ int main(void)
     FrameTimer frameTimer;
 
     Renderer::SetClearColor({.1, .1, .1, 1});
+
+    float ambientStr = 0.2f;
+    float diffuseStr = 0.5f;
+
+    glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
+
+    glm::vec3 lightAmbient = ambientColor;
+    glm::vec3 lightDiffuse = diffuseColor;
+    glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
+
+    glm::vec3 materialAmbient = {1.0f, 0.5f, 0.31f};
+    glm::vec3 materialDiffuse = {1.0f, 0.5f, 0.31f};
+    glm::vec3 materialSpecular = {0.5f, 0.5f, 0.5f};
+
+    float shininess = 32.0f;
 
     while (!app->ShouldClose())
     {
@@ -145,17 +155,19 @@ int main(void)
         glm::mat4 model = glm::mat4(1.0);
 
         cubeShader.Bind();
-        cubeShader.SetUniform("material.ambient", ambient);
-        cubeShader.SetUniform("material.diffuse", diffuse);
-        cubeShader.SetUniform("material.specular", specular);
-        cubeShader.SetUniform("material.shininess", specularShininess);
-
-        // cubeShader.SetUniform("u_AmbientColor", lampColor);
-        // cubeShader.SetUniform("u_Color", cubeColor);
-        cubeShader.SetUniform("u_LightColor", lampColor);
-        cubeShader.SetUniform("u_LightPosition", lampPosition);
-        cubeShader.SetUniform("u_CameraPosition",
+        cubeShader.SetUniform("light.position", lampPosition);
+        cubeShader.SetUniform("camera.position",
                               camera.GetTransform().Position);
+
+        cubeShader.SetUniform("material.ambient", materialAmbient);
+        cubeShader.SetUniform("material.diffuse", materialDiffuse);
+        cubeShader.SetUniform("material.specular", materialSpecular);
+        cubeShader.SetUniform("material.shininess", shininess);
+
+        cubeShader.SetUniform("light.ambient", lightAmbient);
+        cubeShader.SetUniform("light.diffuse", lightDiffuse);
+        cubeShader.SetUniform("light.specular", lightSpecular);
+
         cubeShader.SetUniform(
             "u_Model",
             glm::scale(glm::translate(model, cubePosition), {1, 1, 1}));
@@ -181,20 +193,11 @@ int main(void)
         {
             ImGui::Begin("Options", &guiWindow);
             ImGui::Text("GLFW Time: %lf", glfwGetTime());
-
             camera.DrawImGUI();
-            ImGui::ColorEdit3("Ambient color", glm::value_ptr(ambientColor));
-            ImGui::SliderFloat3("Ambient", glm::value_ptr(ambient), 0, 1);
-            ImGui::SliderFloat3("Diffuse", glm::value_ptr(diffuse), 0, 1);
-            ImGui::SliderFloat3("Specular", glm::value_ptr(specular), 0, 1);
             ImGui::SliderFloat3("Cube position", glm::value_ptr(cubePosition),
                                 -10, 10);
-            ImGui::ColorEdit3("Cube color", glm::value_ptr(cubeColor));
             ImGui::SliderFloat3("Lamp position", glm::value_ptr(lampPosition),
                                 -10, 10);
-            ImGui::ColorEdit3("Lamp color", glm::value_ptr(lampColor));
-            ImGui::SliderFloat("Specular Shininess", &specularShininess, 0,
-                               128);
             ImGui::End();
         }
 
