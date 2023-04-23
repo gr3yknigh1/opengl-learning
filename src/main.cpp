@@ -100,7 +100,7 @@ int main(void)
     cubeVa.AddBuffer(vb, layout);
 
     glm::vec3 cubeColor = {0.7, 0.2, 0.2};
-    glm::vec3 cubePosition = {5, 0, 5};
+    glm::vec3 cubePosition = {5, 0, 0};
 
     Shader cubeShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
@@ -121,8 +121,8 @@ int main(void)
     bool moveLamp = false;
     FrameTimer frameTimer;
 
-    Texture texture0(ASSETS_DIR "/textures/container2.png");
-    texture0.Bind();
+    Texture cubeTexture(ASSETS_DIR "/textures/container2.png");
+    Texture cubeSpecMap(ASSETS_DIR "/textures/container2_specular.png");
 
     Renderer::SetClearColor({.1, .1, .1, 1});
     while (!app->ShouldClose())
@@ -163,9 +163,11 @@ int main(void)
                               camera.GetTransform().Position);
 
         // cubeShader.SetUniform("material.ambient", materialAmbient);
-        texture0.BindTo(0);
+        cubeTexture.BindTo(0);
         cubeShader.SetUniform("material.diffuse", 0);
-        cubeShader.SetUniform("material.specular", materialSpecular);
+        // cubeShader.SetUniform("material.specular", materialSpecular);
+        cubeSpecMap.BindTo(1);
+        cubeShader.SetUniform("material.specular", 1);
         cubeShader.SetUniform("material.shininess", shininess);
 
         cubeShader.SetUniform("light.ambient", lightAmbient);
