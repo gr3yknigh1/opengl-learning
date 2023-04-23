@@ -2,7 +2,9 @@
 
 layout (location = 0) in vec3 l_Position;
 layout (location = 1) in vec3 l_Normal;
+layout (location = 2) in vec2 l_TexCoords;
 
+out vec2 o_TexCoords;
 out vec3 o_Normal;
 out vec3 o_FragPosition;
 
@@ -17,5 +19,7 @@ void main()
     o_Normal = mat3(transpose(inverse(u_Model))) * l_Normal;
     //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - constly operation
     // NOTE: Better perform this calculation in CPU
+
+    o_TexCoords = l_TexCoords;
 };
 

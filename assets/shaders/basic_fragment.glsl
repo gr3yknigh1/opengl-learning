@@ -3,8 +3,7 @@
 out vec4 FragColor;
 
 struct Material {
-    vec3 ambient;
-    vec3 diffuse;
+    sampler2D diffuse;
     vec3 specular;
     float shininess;
 };
@@ -21,6 +20,7 @@ struct Camera {
     vec3 position;
 };
 
+in vec2 o_TexCoords;
 in vec3 o_Normal;
 in vec3 o_FragPosition;
 
@@ -31,13 +31,13 @@ uniform Camera camera;
 void main()
 {
     // Ambient
-    vec3 ambientLight = light.ambient * material.ambient;
+    vec3 ambientLight = light.ambient * vec3(texture(material.diffuse, o_TexCoords));
 
     // Diffuse
     vec3 normalVector = normalize(o_Normal);
     vec3 lightDirection = normalize(light.position - o_FragPosition);
     float diffuse = max(dot(normalVector, lightDirection), 0);
-    vec3 diffuseLight = light.diffuse * (diffuse * material.diffuse);
+    vec3 diffuseLight = light.diffuse * (diffuse * vec3(texture(material.diffuse, o_TexCoords)));
 
     // Specular
     vec3 cameraDirection = normalize(camera.position - o_FragPosition);
