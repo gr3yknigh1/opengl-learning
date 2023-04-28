@@ -14,6 +14,7 @@ void Camera3D::Rotate(float xPosition, float yPosition)
 {
     if (Application::IsCursorEnabled)
     {
+        m_FirstLastPositionAssignment = true;
         return;
     }
 
