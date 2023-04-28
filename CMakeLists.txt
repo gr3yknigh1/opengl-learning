@@ -19,6 +19,7 @@ add_subdirectory("${VENDOR_DIR}/glew"  EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/glfw"  EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/fmt"   EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/imgui" EXCLUDE_FROM_ALL)
+add_subdirectory("${VENDOR_DIR}/assimp" EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME} "${SOURCES_DIR}/main.cpp")
 
@@ -29,6 +30,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE libglew_static)
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui imgui-glfw imgui-opengl3)
+target_link_libraries(${PROJECT_NAME} PRIVATE assimp)
 
 target_include_directories(
     ${PROJECT_NAME}
@@ -36,6 +38,7 @@ target_include_directories(
     PRIVATE "${VENDOR_DIR}/glew/include"
     PRIVATE "${VENDOR_DIR}/glfw/include"
     PRIVATE "${VENDOR_DIR}/fmt/include"
+    PRIVATE "${VENDOR_DIR}/assimp/include"
     PRIVATE "${VENDOR_DIR}/stb"
     PRIVATE "${VENDOR_DIR}/imgui"
 )
