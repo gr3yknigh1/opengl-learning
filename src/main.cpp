@@ -100,7 +100,13 @@ int main(void)
     cubeVa.AddBuffer(vb, layout);
 
     glm::vec3 cubeColor = {0.7, 0.2, 0.2};
-    glm::vec3 cubePosition = {5, 0, 0};
+
+    std::vector<glm::vec3> cubePositions = {
+        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
     Shader cubeShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
@@ -111,7 +117,7 @@ int main(void)
 
     glm::vec3 lightColor(1, 1, 1);
     glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
-    unsigned long lampSpeed = 5;
+    uint64_t lampSpeed = 5;
 
     Shader lampShader =
         Shader::FromSourceFiles(ASSETS_DIR "/shaders/light_vertex.glsl",
@@ -126,6 +132,9 @@ int main(void)
     Texture emissionMap(ASSETS_DIR "/textures/matrix.jpg");
 
     Renderer::SetClearColor({.1, .1, .1, 1});
+
+    uint64_t index = 0;
+
     while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
@@ -149,6 +158,7 @@ int main(void)
         glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
         glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
 
+        glm::vec3 lightDirection = {-0.2f, -1.0f, -0.3f};
         glm::vec3 lightAmbient = ambientColor;
         glm::vec3 lightDiffuse = diffuseColor;
         glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
@@ -159,8 +169,8 @@ int main(void)
 
         float shininess = 32.0f;
 
+        cubeVa.Bind();
         cubeShader.Bind();
-        cubeShader.SetUniform("light.position", lampPosition);
         cubeShader.SetUniform("camera.position",
                               camera.GetTransform().Position);
 
@@ -172,26 +182,33 @@ int main(void)
         cubeShader.SetUniform("material.emission", 2);
         cubeShader.SetUniform("material.shininess", shininess);
 
+        cubeShader.SetUniform("light.direction", lightDirection);
         cubeShader.SetUniform("light.ambient", lightAmbient);
         cubeShader.SetUniform("light.diffuse", lightDiffuse);
         cubeShader.SetUniform("light.specular", lightSpecular);
 
         cubeShader.SetUniform("world.time", (float)time);
 
-        cubeShader.SetUniform(
-            "u_Model",
-            glm::scale(glm::translate(model, cubePosition), {1, 1, 1}));
         cubeShader.SetUniform("u_View", view);
         cubeShader.SetUniform("u_Projection", projection);
-        cubeVa.Bind();
-        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
 
-        lampShader.Bind();
-        lampShader.SetUniform("u_Transform",
-                              projection * view *
-                                  glm::translate(model, lampPosition));
-        lampVa.Bind();
-        GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
+        for (uint64_t i = 0; i < cubePositions.size(); ++i)
+        {
+            glm::mat4 cubeModel = model;
+            cubeModel =
+                glm::rotate(cubeModel, 20.0f * i, glm::vec3(1.0f, 0.0f, 0.0f));
+            cubeModel = glm::scale(cubeModel, {1, 1, 1});
+            cubeModel = glm::translate(cubeModel, cubePositions[i]);
+            cubeShader.SetUniform("u_Model", cubeModel);
+            GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
+        }
+
+        // lampShader.Bind();
+        // lampShader.SetUniform("u_Transform",
+        //                       projection * view *
+        //                           glm::translate(model, lampPosition));
+        // lampVa.Bind();
+        // GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
 
         Renderer::EndDraw();
 
@@ -204,10 +221,14 @@ int main(void)
             ImGui::Begin("Options", &guiWindow);
             ImGui::Text("GLFW Time: %lf", glfwGetTime());
             camera.DrawImGUI();
-            ImGui::SliderFloat3("Cube position", glm::value_ptr(cubePosition),
-                                -10, 10);
-            ImGui::SliderFloat3("Lamp position", glm::value_ptr(lampPosition),
-                                -10, 10);
+
+            ImGui::SliderInt("Cube Position Index", (int *)(&index), 0,
+                             cubePositions.size() - 1);
+            ImGui::SliderFloat3("Cube position",
+                                glm::value_ptr(cubePositions[index]), -10, 10);
+            // ImGui::SliderFloat3("Lamp position",
+            // glm::value_ptr(lampPosition),
+            //                     -10, 10);
             ImGui::Checkbox("Move Lamp", &moveLamp);
             ImGui::End();
         }
