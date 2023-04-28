@@ -123,16 +123,18 @@ int main(void)
 
     Texture cubeTexture(ASSETS_DIR "/textures/container2.png");
     Texture cubeSpecMap(ASSETS_DIR "/textures/container2_specular.png");
+    Texture emissionMap(ASSETS_DIR "/textures/matrix.jpg");
 
     Renderer::SetClearColor({.1, .1, .1, 1});
     while (!app->ShouldClose())
     {
         float deltaTime = frameTimer.Tick();
+        double time = glfwGetTime();
 
         camera.Update(app->GetWindow(), deltaTime);
 
         lampPosition.z +=
-            (lampSpeed * deltaTime * std::sin(glfwGetTime())) * (int)moveLamp;
+            (lampSpeed * deltaTime * std::sin(time)) * (int)moveLamp;
 
         Renderer::BeginDraw(camera);
         Renderer::Clear();
@@ -162,17 +164,19 @@ int main(void)
         cubeShader.SetUniform("camera.position",
                               camera.GetTransform().Position);
 
-        // cubeShader.SetUniform("material.ambient", materialAmbient);
         cubeTexture.BindTo(0);
         cubeShader.SetUniform("material.diffuse", 0);
-        // cubeShader.SetUniform("material.specular", materialSpecular);
         cubeSpecMap.BindTo(1);
         cubeShader.SetUniform("material.specular", 1);
+        emissionMap.BindTo(2);
+        cubeShader.SetUniform("material.emission", 2);
         cubeShader.SetUniform("material.shininess", shininess);
 
         cubeShader.SetUniform("light.ambient", lightAmbient);
         cubeShader.SetUniform("light.diffuse", lightDiffuse);
         cubeShader.SetUniform("light.specular", lightSpecular);
+
+        cubeShader.SetUniform("world.time", (float)time);
 
         cubeShader.SetUniform(
             "u_Model",

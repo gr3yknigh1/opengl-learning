@@ -2,9 +2,14 @@
 
 out vec4 FragColor;
 
+struct World {
+    float time;
+};
+
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D emission;
     float shininess;
 };
 
@@ -24,6 +29,7 @@ in vec2 o_TexCoords;
 in vec3 o_Normal;
 in vec3 o_FragPosition;
 
+uniform World world;
 uniform Material material;
 uniform Light light;
 uniform Camera camera;
@@ -43,8 +49,17 @@ void main()
     vec3 cameraDirection = normalize(camera.position - o_FragPosition);
     vec3 reflectionDirection = reflect(-lightDirection, normalVector);
     float specular = pow(max(dot(cameraDirection, reflectionDirection), 0.0), material.shininess);
-    vec3 specularLight = light.specular * (specular * vec3(texture(material.specular, o_TexCoords)));
+    vec3 specularFrag = texture(material.specular, o_TexCoords).rgb;
+    vec3 specularLight = light.specular * (specular * specularFrag);
 
-    FragColor = vec4(ambientLight + diffuseLight + specularLight, 1.0f);
+    vec3 emission = vec3(0.0f);
+    if (specularFrag == vec3(0.0f))
+    {
+        emission = texture(material.emission, o_TexCoords + (vec2(0.0f, 1.0f) * world.time)).rgb;
+        emission *= diffuse;
+        emission *= 1 - ambientLight;
+    }
+
+    FragColor = vec4(ambientLight + diffuseLight + specularLight + emission, 1.0f);
 };
 
