@@ -14,6 +14,9 @@ set(ASSETS_DIR  "${PROJECT_SOURCE_DIR}/assets")
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${SOURCES_DIR}/*.cpp")
 
 add_definitions(-DGLEW_STATIC)
+add_definitions(-DBUILD_SHARED_LIBS=OFF)
+add_definitions(-DASSIMP_NO_EXPORT=ON)
+add_definitions(-DASSIMP_BUILD_ZLIB=OFF)
 
 add_subdirectory("${VENDOR_DIR}/glew"  EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/glfw"  EXCLUDE_FROM_ALL)
