@@ -29,7 +29,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INLCUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE libglew_static)
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
-target_link_libraries(${PROJECT_NAME} PUBLIC imgui imgui-glfw imgui-opengl3)
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui imgui-glfw imgui-opengl3)
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp)
 
 target_include_directories(
