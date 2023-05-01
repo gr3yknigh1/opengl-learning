@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 #include "glsandbox/GLObject.hpp"
@@ -28,8 +29,8 @@ public:
     void Delete() const;
 
     void Bind() const;
-    void BindTo(const uint32_t slot) const;
-    static void Activate(const uint32_t slot);
+    void BindTo(const uint32_t slot);
+    void Activate(const uint32_t slot);
     void Unbind() const;
 
     void SetOptionMinFilter(int option) const;
@@ -52,7 +53,15 @@ public:
         return m_Type;
     }
 
-    Texture &operator=(const Texture& texture);
+    constexpr bool IsActivated() const
+    {
+        return m_Slot.has_value();
+    }
+
+    constexpr std::optional<int32_t> GetSlot() const
+    {
+        return m_Slot;
+    }
 
 private:
     std::string m_TexturePath;
@@ -62,6 +71,8 @@ private:
     uint32_t m_Width;
     uint32_t m_Height;
     uint32_t m_BPP; // Bits Per Pixel
+
+    std::optional<int32_t> m_Slot;
 
     void Initialize(void);
 };

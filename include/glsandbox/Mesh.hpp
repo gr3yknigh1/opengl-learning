@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "glsandbox/Core/Refs.hpp"
 #include "glsandbox/IndexBuffer.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
@@ -17,7 +18,7 @@ class Mesh
 public:
     Mesh(const std::vector<Vertex> vertices,
          const std::vector<uint32_t> indices,
-         const std::vector<Texture> textures);
+         const std::vector<Ref<Texture>> textures);
 
     // TODO: Remove actual draw call from Mesh class
     void Draw(const Shader &shader) const;
@@ -35,7 +36,7 @@ public:
 private:
     std::vector<Vertex> m_Vertices;
     std::vector<uint32_t> m_Indices;
-    std::vector<Texture> m_Textures;
+    std::vector<Ref<Texture>> m_Textures;
 
     VertexArray m_VertexArray;
     VertexBuffer m_VertexBuffer;

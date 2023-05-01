@@ -6,6 +6,7 @@
 
 #include <assimp/scene.h>
 
+#include "glsandbox/Core/Refs.hpp"
 #include "glsandbox/Mesh.hpp"
 #include "glsandbox/Shader.hpp"
 
@@ -23,9 +24,9 @@ private:
     void LoadModel();
     void ProcessNode(aiNode *node, const aiScene *scene);
     Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Texture> LoadMaterialTextures(aiMaterial *mat,
-                                              aiTextureType type,
-                                              TextureType textureType);
+    std::vector<Ref<Texture>> LoadMaterialTextures(aiMaterial *mat,
+                                                   aiTextureType type,
+                                                   TextureType textureType);
 };
 
 #endif // MODEL_HPP_

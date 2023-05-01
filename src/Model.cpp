@@ -62,7 +62,7 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<Texture> textures;
+    std::vector<Ref<Texture>> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -112,11 +112,11 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     // {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-    std::vector<Texture> diffuseMaps = LoadMaterialTextures(
-        material, aiTextureType_BASE_COLOR, TextureType::Diffuse);
+    std::vector<Ref<Texture>> diffuseMaps = LoadMaterialTextures(
+        material, aiTextureType_DIFFUSE, TextureType::Diffuse);
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    std::vector<Texture> specularMaps = LoadMaterialTextures(
+    std::vector<Ref<Texture>> specularMaps = LoadMaterialTextures(
         material, aiTextureType_SPECULAR, TextureType::Specular);
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // }
@@ -124,17 +124,18 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::LoadMaterialTextures(aiMaterial *mat,
-                                                 aiTextureType type,
-                                                 TextureType textureType)
+std::vector<Ref<Texture>> Model::LoadMaterialTextures(aiMaterial *mat,
+                                                      aiTextureType type,
+                                                      TextureType textureType)
 {
-    std::vector<Texture> textures;
+    std::vector<Ref<Texture>> textures;
 
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString path;
         mat->GetTexture(type, i, &path);
-        Texture texture(m_Path.parent_path().append(path.C_Str()), textureType);
+        Ref<Texture> texture = MakeRef<Texture>(
+            m_Path.parent_path().append(path.C_Str()), textureType);
         textures.push_back(texture);
     }
     std::cout << textures.size() << '\n';

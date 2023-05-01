@@ -54,7 +54,7 @@ void Texture::Bind() const
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 }
 
-void Texture::BindTo(const uint32_t slot) const
+void Texture::BindTo(const uint32_t slot)
 {
     Activate(slot);
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
@@ -63,6 +63,7 @@ void Texture::BindTo(const uint32_t slot) const
 void Texture::Activate(const uint32_t slot)
 {
     GL_Call(glActiveTexture(GL_TEXTURE0 + slot));
+    m_Slot = slot;
 }
 
 void Texture::Unbind() const
@@ -137,16 +138,4 @@ void Texture::Initialize(void)
     Unbind();
 
     stbi_image_free(m_Buffer);
-}
-
-Texture &Texture::operator=(const Texture &texture)
-{
-    Delete();
-    m_Id = texture.m_Id;
-    m_TexturePath = texture.m_TexturePath;
-    m_Type = texture.m_Type;
-    m_Width = texture.m_Width;
-    m_Height = texture.m_Height;
-    m_BPP = texture.m_BPP;
-    return *this;
 }

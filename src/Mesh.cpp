@@ -7,7 +7,7 @@
 
 Mesh::Mesh(const std::vector<Vertex> vertices,
            const std::vector<uint32_t> indices,
-           const std::vector<Texture> textures)
+           const std::vector<Ref<Texture>> textures)
     : m_Vertices(vertices), m_Indices(indices), m_Textures(textures),
       m_VertexArray(), m_VertexBuffer(vertices), m_IndexBuffer(indices)
 {
@@ -22,28 +22,28 @@ void Mesh::Draw(const Shader &shader) const
 
     for (uint32_t i = 0; i < m_Textures.size(); ++i)
     {
-        const Texture &texture = m_Textures[i];
-        texture.BindTo(i);
-        const char *textureTypeStr = TextureTypeToString(texture.GetType());
+        const Ref<Texture> &texture = m_Textures[i];
+        texture->BindTo(i);
+        const char *textureTypeStr = TextureTypeToString(texture->GetType());
 
         if (strlen(textureTypeStr) == 0 ||
-            texture.GetType() == TextureType::None)
+            texture->GetType() == TextureType::None)
         {
             continue;
         }
 
         uint32_t number;
-        if (texture.GetType() == TextureType::Diffuse)
+        if (texture->GetType() == TextureType::Diffuse)
         {
             number = diffuseN;
             ++diffuseN;
         }
-        else if (texture.GetType() == TextureType::Specular)
+        else if (texture->GetType() == TextureType::Specular)
         {
             number = specularN;
             ++specularN;
         }
-        else if (texture.GetType() == TextureType::Emission)
+        else if (texture->GetType() == TextureType::Emission)
         {
             number = emissionN;
             ++emissionN;
@@ -51,10 +51,9 @@ void Mesh::Draw(const Shader &shader) const
 
         const std::string uniformName =
             fmt::format("material.{}{}", textureTypeStr, number);
-        shader.SetUniform(uniformName, (int32_t)texture.GetId());
-    }
 
-    Texture::Activate(0);
+        shader.SetUniform(uniformName, texture->GetSlot().value());
+    }
 
     m_VertexArray.Bind();
     m_IndexBuffer.Bind();
