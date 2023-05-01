@@ -20,7 +20,7 @@ private:
     const std::filesystem::path m_Path;
     std::vector<Mesh> m_Meshes;
 
-    void LoadModel(const std::filesystem::path &path);
+    void LoadModel();
     void ProcessNode(aiNode *node, const aiScene *scene);
     Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Texture> LoadMaterialTextures(aiMaterial *mat,

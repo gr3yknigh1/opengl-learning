@@ -8,7 +8,7 @@
 
 Model::Model(const std::filesystem::path &path) : m_Path(path), m_Meshes()
 {
-    LoadModel(path);
+    LoadModel();
 }
 
 void Model::Draw(const Shader &shader) const
@@ -19,18 +19,18 @@ void Model::Draw(const Shader &shader) const
     }
 }
 
-void Model::LoadModel(const std::filesystem::path &path)
+void Model::LoadModel()
 {
-    if (!std::filesystem::exists(path))
+    if (!std::filesystem::exists(m_Path))
     {
         const std::string errorMessage = fmt::format(
-            "Failed loading model: path doens't exists '{}'", path.c_str());
+            "Failed loading model: path doens't exists '{}'", m_Path.c_str());
         throw std::invalid_argument(errorMessage);
     }
 
     Assimp::Importer importer;
     const aiScene *scene =
-        importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode)
@@ -39,6 +39,8 @@ void Model::LoadModel(const std::filesystem::path &path)
             "Error loading Asimp scene: {}", importer.GetErrorString());
         throw std::invalid_argument(errorMessage);
     }
+
+    ProcessNode(scene->mRootNode, scene);
 }
 
 void Model::ProcessNode(aiNode *node, const aiScene *scene)
@@ -74,10 +76,13 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
         readingVector3.z = mesh->mVertices[i].z;
         vertex.Position = readingVector3;
 
-        readingVector3.x = mesh->mNormals[i].x;
-        readingVector3.y = mesh->mNormals[i].y;
-        readingVector3.z = mesh->mNormals[i].z;
-        vertex.NormalVector = readingVector3;
+        if (mesh->HasNormals())
+        {
+            readingVector3.x = mesh->mNormals[i].x;
+            readingVector3.y = mesh->mNormals[i].y;
+            readingVector3.z = mesh->mNormals[i].z;
+            vertex.NormalVector = readingVector3;
+        }
 
         if (mesh->mTextureCoords[0])
         {
@@ -103,19 +108,18 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     }
 
     // process material
-    if (mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+    // if (mesh->mMaterialIndex >= 0)
+    // {
+    aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-        std::vector<Texture> diffuseMaps = LoadMaterialTextures(
-            material, aiTextureType_DIFFUSE, TextureType::Diffuse);
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    std::vector<Texture> diffuseMaps = LoadMaterialTextures(
+        material, aiTextureType_BASE_COLOR, TextureType::Diffuse);
+    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<Texture> specularMaps = LoadMaterialTextures(
-            material, aiTextureType_SPECULAR, TextureType::Specular);
-        textures.insert(textures.end(), specularMaps.begin(),
-                        specularMaps.end());
-    }
+    std::vector<Texture> specularMaps = LoadMaterialTextures(
+        material, aiTextureType_SPECULAR, TextureType::Specular);
+    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    // }
 
     return Mesh(vertices, indices, textures);
 }
@@ -130,9 +134,9 @@ std::vector<Texture> Model::LoadMaterialTextures(aiMaterial *mat,
     {
         aiString path;
         mat->GetTexture(type, i, &path);
-        Texture texture(path.C_Str(), textureType);
+        Texture texture(m_Path.parent_path().append(path.C_Str()), textureType);
         textures.push_back(texture);
     }
-
+    std::cout << textures.size() << '\n';
     return textures;
 }

@@ -102,6 +102,9 @@ void Texture::Initialize(void)
             fmt::format("Path doesn't exists '{}'", m_TexturePath.c_str()));
     }
 
+    std::cout << fmt::format("Loading texture from path: '{}' - of type {}\n",
+                             m_TexturePath.c_str(), (int)m_Type);
+
     stbi_set_flip_vertically_on_load(true);
     // TODO: Add channels field
     m_Buffer = stbi_load(

@@ -57,6 +57,7 @@ void Mesh::Draw(const Shader &shader) const
     Texture::Activate(0);
 
     m_VertexArray.Bind();
+    m_IndexBuffer.Bind();
     GL_Call(glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0));
     m_VertexArray.Unbind();
 }
