@@ -2,9 +2,9 @@
 
 out vec4 FragColor;
 
-in vec4 vertexColor;
-
 void main()
 {
-    FragColor = vertexColor;
+    FragColor = vec4(1.0f);
 };
+
+// vim: set filetype=glsl:
