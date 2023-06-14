@@ -120,9 +120,12 @@ int main(void)
     GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
+        0.5f,  0.5f,  0.0f,
+        0.5f,  -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        -0.5f, 0.5f,  0.0f,
     };
-    uint32_t indices[] = {0, 1, 2, 3, 4, 5};
+    uint32_t indices[] = {0, 1, 2, 0, 2, 3};
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
