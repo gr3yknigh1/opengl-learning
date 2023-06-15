@@ -12,6 +12,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include "glsandbox/glutils.hpp"
 
 static int32_t CompileShader(const char *shaderPath, int shaderType)
@@ -120,12 +123,36 @@ int main(void)
     GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     float vertices[] = {
-        0.5f,  0.5f,  0.0f,
-        0.5f,  -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f,  0.0f,
+        // positions        // colors         // texture coords
+        0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
     };
     uint32_t indices[] = {0, 1, 2, 0, 2, 3};
+
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    const char *texturePath = "assets/textures/texture.jpeg";
+    unsigned char *data =
+        stbi_load(texturePath, &width, &height, &nrChannels, 0);
+    if (data == nullptr)
+    {
+        std::cerr << "Error during loading of '" << texturePath << "'\n";
+        return EXIT_FAILURE;
+    }
+
+    uint32_t textureId;
+    GL_Call(glGenTextures(1, &textureId));
+    GL_Call(glBindTexture(GL_TEXTURE_2D, textureId));
+    GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                         GL_UNSIGNED_BYTE, data));
+    GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
+
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+    GL_Call(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
 
     uint32_t vbo = 0, vao = 0, ebo = 0;
 
@@ -144,8 +171,16 @@ int main(void)
                          GL_STATIC_DRAW));
 
     GL_Call(
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0));
     GL_Call(glEnableVertexAttribArray(0));
+    // color attribute
+    GL_Call(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                                  (void *)(3 * sizeof(float))));
+    GL_Call(glEnableVertexAttribArray(1));
+
+    GL_Call(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                                  (void *)(6 * sizeof(float))));
+    GL_Call(glEnableVertexAttribArray(2));
 
     uint32_t vertexShaderId =
         CompileShader("./assets/shaders/sample.vs", GL_VERTEX_SHADER);
@@ -156,6 +191,12 @@ int main(void)
     GL_Call(glDeleteShader(vertexShaderId));
     GL_Call(glDeleteShader(fragmentShaderId));
     GL_Call(glUseProgram(shaderProgramId));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    int uniformPos = glGetUniformLocation(shaderProgramId, "Texture");
+    glUniform1i(uniformPos, GL_TEXTURE0);
 
     while (!glfwWindowShouldClose(window))
     {

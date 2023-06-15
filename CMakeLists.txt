@@ -22,7 +22,6 @@ add_subdirectory("${VENDOR_DIR}/glm"    EXCLUDE_FROM_ALL)
 add_executable(${PROJECT_NAME} "${SOURCES_DIR}/main.cpp")
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${INLCUDE_DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE libglew_static)
@@ -30,6 +29,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glm)
 
 target_include_directories(
     ${PROJECT_NAME}
+    PRIVATE ${INLCUDE_DIR}
     PRIVATE "${VENDOR_DIR}/glm"
     PRIVATE "${VENDOR_DIR}/glew/include"
     PRIVATE "${VENDOR_DIR}/glfw/include"
