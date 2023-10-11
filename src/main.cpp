@@ -22,6 +22,7 @@
 #include "glsandbox/FrameTimer.hpp"
 #include "glsandbox/GLUtils.hpp"
 #include "glsandbox/IndexBuffer.hpp"
+#include "glsandbox/Model.hpp"
 #include "glsandbox/Renderer/Renderer.hpp"
 #include "glsandbox/Shader.hpp"
 #include "glsandbox/Texture.hpp"
@@ -46,92 +47,95 @@ int main(void)
         }));
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
-    const std::vector<float> vertices = {
-        // positions          // normals           // texture coords
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,  //
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,   //
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,   //
-        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,  //
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //
-                                                            //
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   //
-        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,    //
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,     //
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,     //
-        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,    //
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   //
-                                                            //
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   //
-        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,  //
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //
-        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  //
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   //
-                                                            //
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,     //
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,    //
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   //
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   //
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,    //
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,     //
-                                                            //
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, //
-        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,  //
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,   //
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,   //
-        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,  //
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, //
-                                                            //
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,   //
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,    //
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,     //
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,     //
-        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,    //
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f    //
-    };
-    VertexBuffer vb(vertices);
-    VertexBufferLayout layout;
-    layout.PushFloat(3);
-    layout.PushFloat(3);
-    layout.PushFloat(2);
+    // const std::vector<float> vertices = {
+    //     // positions          // normals           // texture coords
+    //     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //
+    //     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,  //
+    //     0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,   //
+    //     0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,   //
+    //     -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,  //
+    //     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //
+    //                                                         //
+    //     -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   //
+    //     0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,    //
+    //     0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,     //
+    //     0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,     //
+    //     -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,    //
+    //     -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   //
+    //                                                         //
+    //     -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   //
+    //     -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,  //
+    //     -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //
+    //     -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //
+    //     -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  //
+    //     -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   //
+    //                                                         //
+    //     0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,     //
+    //     0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,    //
+    //     0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   //
+    //     0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   //
+    //     0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,    //
+    //     0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,     //
+    //                                                         //
+    //     -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, //
+    //     0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,  //
+    //     0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,   //
+    //     0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,   //
+    //     -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,  //
+    //     -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, //
+    //                                                         //
+    //     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,   //
+    //     0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,    //
+    //     0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,     //
+    //     0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,     //
+    //     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,    //
+    //     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f    //
+    // };
+    // VertexBuffer vb(vertices);
+    // VertexBufferLayout layout;
+    // layout.PushFloat(3);
+    // layout.PushFloat(3);
+    // layout.PushFloat(2);
 
-    VertexArray cubeVa;
-    cubeVa.AddBuffer(vb, layout);
+    // VertexArray cubeVa;
+    // cubeVa.AddBuffer(vb, layout);
 
-    glm::vec3 cubeColor = {0.7, 0.2, 0.2};
+    // glm::vec3 cubeColor = {0.7, 0.2, 0.2};
+    glm::vec3 cubePosition = {0, 0, 0};
 
-    std::vector<glm::vec3> cubePositions = {
-        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+    // std::vector<glm::vec3> cubePositions = {
+    //     glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+    //     glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+    //     glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+    //     glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+    //     glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
     Shader cubeShader =
-        Shader::FromSourceFiles(ASSETS_DIR "/shaders/basic_vertex.glsl",
-                                ASSETS_DIR "/shaders/basic_fragment.glsl");
+        Shader::FromSourceFiles(ASSETS_DIR "/shaders/model-vs.glsl",
+                                ASSETS_DIR "/shaders/model-fs.glsl");
 
-    VertexArray lampVa;
-    lampVa.AddBuffer(vb, layout);
+    // VertexArray lampVa;
+    // lampVa.AddBuffer(vb, layout);
+    //
+    // glm::vec3 lightColor(1, 1, 1);
+    // glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
+    // uint64_t lampSpeed = 5;
 
-    glm::vec3 lightColor(1, 1, 1);
-    glm::vec3 lampPosition(1.2f, 1.0f, 2.0f);
-    uint64_t lampSpeed = 5;
-
-    Shader lampShader =
-        Shader::FromSourceFiles(ASSETS_DIR "/shaders/light_vertex.glsl",
-                                ASSETS_DIR "/shaders/light_fragment.glsl");
+    // Shader lampShader =
+    //     Shader::FromSourceFiles(ASSETS_DIR "/shaders/light_vertex.glsl",
+    //                             ASSETS_DIR "/shaders/light_fragment.glsl");
 
     bool guiWindow = true;
-    bool moveLamp = false;
+    // bool moveLamp = false;
     FrameTimer frameTimer;
 
-    Texture cubeTexture(ASSETS_DIR "/textures/container2.png");
-    Texture cubeSpecMap(ASSETS_DIR "/textures/container2_specular.png");
-    Texture emissionMap(ASSETS_DIR "/textures/matrix.jpg");
+    // Texture cubeTexture(ASSETS_DIR "/textures/container2.png");
+    // Texture cubeSpecMap(ASSETS_DIR "/textures/container2_specular.png");
+    // Texture emissionMap(ASSETS_DIR "/textures/matrix.jpg");
 
     Renderer::SetClearColor({.1, .1, .1, 1});
+
+    Model cubeModel(ASSETS_DIR "/meshes/cube.obj");
 
     uint64_t index = 0;
 
@@ -142,8 +146,8 @@ int main(void)
 
         camera.Update(app->GetWindow(), deltaTime);
 
-        lampPosition.z +=
-            (lampSpeed * deltaTime * std::sin(time)) * (int)moveLamp;
+        // lampPosition.z +=
+        //     (lampSpeed * deltaTime * std::sin(time)) * (int)moveLamp;
 
         Renderer::BeginDraw(camera);
         Renderer::Clear();
@@ -152,56 +156,58 @@ int main(void)
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0);
 
-        float ambientStr = 0.2f;
-        float diffuseStr = 0.5f;
+        // float ambientStr = 0.2f;
+        // float diffuseStr = 0.5f;
 
-        glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
+        // glm::vec3 diffuseColor = lightColor * glm::vec3(diffuseStr);
+        // glm::vec3 ambientColor = diffuseColor * glm::vec3(ambientStr);
 
-        glm::vec3 lightDirection = {-0.2f, -1.0f, -0.3f};
-        glm::vec3 lightAmbient = ambientColor;
-        glm::vec3 lightDiffuse = diffuseColor;
-        glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
+        // glm::vec3 lightDirection = {-0.2f, -1.0f, -0.3f};
+        // glm::vec3 lightAmbient = ambientColor;
+        // glm::vec3 lightDiffuse = diffuseColor;
+        // glm::vec3 lightSpecular = {1.0f, 1.0f, 1.0f};
 
-        glm::vec3 materialAmbient = {1.0f, 0.5f, 0.31f};
-        glm::vec3 materialDiffuse = {1.0f, 0.5f, 0.31f};
-        glm::vec3 materialSpecular = {0.5f, 0.5f, 0.5f};
+        // glm::vec3 materialAmbient = {1.0f, 0.5f, 0.31f};
+        // glm::vec3 materialDiffuse = {1.0f, 0.5f, 0.31f};
+        // glm::vec3 materialSpecular = {0.5f, 0.5f, 0.5f};
 
-        float shininess = 32.0f;
+        // float shininess = 32.0f;
 
-        cubeVa.Bind();
+        // cubeVa.Bind();
         cubeShader.Bind();
-        cubeShader.SetUniform("camera.position",
-                              camera.GetTransform().Position);
+        // cubeShader.SetUniform("camera.position",
+        //                       camera.GetTransform().Position);
 
-        cubeTexture.BindTo(0);
-        cubeShader.SetUniform("material.diffuse", 0);
-        cubeSpecMap.BindTo(1);
-        cubeShader.SetUniform("material.specular", 1);
-        emissionMap.BindTo(2);
-        cubeShader.SetUniform("material.emission", 2);
-        cubeShader.SetUniform("material.shininess", shininess);
+        // cubeTexture.BindTo(0);
+        // cubeShader.SetUniform("material.diffuse", 0);
+        // cubeSpecMap.BindTo(1);
+        // cubeShader.SetUniform("material.specular", 1);
+        // emissionMap.BindTo(2);
+        // cubeShader.SetUniform("material.emission", 2);
+        // cubeShader.SetUniform("material.shininess", shininess);
 
-        cubeShader.SetUniform("light.direction", lightDirection);
-        cubeShader.SetUniform("light.ambient", lightAmbient);
-        cubeShader.SetUniform("light.diffuse", lightDiffuse);
-        cubeShader.SetUniform("light.specular", lightSpecular);
+        // cubeShader.SetUniform("light.direction", lightDirection);
+        // cubeShader.SetUniform("light.ambient", lightAmbient);
+        // cubeShader.SetUniform("light.diffuse", lightDiffuse);
+        // cubeShader.SetUniform("light.specular", lightSpecular);
 
-        cubeShader.SetUniform("world.time", (float)time);
+        // cubeShader.SetUniform("world.time", (float)time);
 
         cubeShader.SetUniform("u_View", view);
         cubeShader.SetUniform("u_Projection", projection);
+        cubeShader.SetUniform("u_Model", glm::translate(model, cubePosition));
+        cubeModel.Draw(cubeShader);
 
-        for (uint64_t i = 0; i < cubePositions.size(); ++i)
-        {
-            glm::mat4 cubeModel = model;
-            cubeModel =
-                glm::rotate(cubeModel, 20.0f * i, glm::vec3(1.0f, 0.0f, 0.0f));
-            cubeModel = glm::scale(cubeModel, {1, 1, 1});
-            cubeModel = glm::translate(cubeModel, cubePositions[i]);
-            cubeShader.SetUniform("u_Model", cubeModel);
-            GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
-        }
+        // for (uint64_t i = 0; i < cubePositions.size(); ++i)
+        // {
+        //     glm::mat4 cubeModel = model;
+        //     cubeModel =
+        //         glm::rotate(cubeModel, 20.0f * i, glm::vec3(1.0f, 0.0f, 0.0f));
+        //     cubeModel = glm::scale(cubeModel, {1, 1, 1});
+            // cubeModel = glm::translate(cubeModel, cubePositions[i]);
+        //     cubeShader.SetUniform("u_Model", cubeModel);
+        //     GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
+        // }
 
         // lampShader.Bind();
         // lampShader.SetUniform("u_Transform",
@@ -222,14 +228,15 @@ int main(void)
             ImGui::Text("GLFW Time: %lf", glfwGetTime());
             camera.DrawImGUI();
 
-            ImGui::SliderInt("Cube Position Index", (int *)(&index), 0,
-                             cubePositions.size() - 1);
-            ImGui::SliderFloat3("Cube position",
-                                glm::value_ptr(cubePositions[index]), -10, 10);
+            // ImGui::SliderInt("Cube Position Index", (int *)(&index), 0,
+            //                  cubePositions.size() - 1);
+            // ImGui::SliderFloat3("Cube position",
+            //                     glm::value_ptr(cubePositions[index]), -10,
+            //                     10);
             // ImGui::SliderFloat3("Lamp position",
             // glm::value_ptr(lampPosition),
             //                     -10, 10);
-            ImGui::Checkbox("Move Lamp", &moveLamp);
+            // ImGui::Checkbox("Move Lamp", &moveLamp);
             ImGui::End();
         }
 
