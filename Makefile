@@ -1,15 +1,18 @@
 .PHONY: fmt lint clean
 
+SOURCES :=
+SOURCES += $(wildcard ./src/*.cpp)
+SOURCES += $(wildcard ./src/**/.cpp)
+SOURCES += $(wildcard ./src/*.hpp)
+SOURCES += $(wildcard ./src/**/.hpp)
+
 
 fmt:
-	clang-format -i ./src/*.cpp || true
-	clang-format -i ./include/**/*.hpp || true
+	clang-format -i $(SOURCES) || true
 
 lint:
-	clang-format -Werror -n ./src/*.cpp || true
-	clang-format -Werror -n ./include/**/*.hpp || true
-	clang-tidy -p ./build ./src/*.cpp || true
-	clang-tidy -p ./build ./include/**/*.hpp || true
+	clang-format -Werror -n $(SOURCES) || true
+	clang-tidy -p ./build $(SOURCES) || true
 
 clean:
 	rm -rf build/

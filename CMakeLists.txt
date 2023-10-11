@@ -1,17 +1,56 @@
 cmake_minimum_required(VERSION 3.22)
-project(opengl-sandbox CXX)
+project(BadSandbox CXX)
 enable_language(CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
-set(INLCUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 set(SOURCES_DIR "${PROJECT_SOURCE_DIR}/src")
 set(VENDOR_DIR  "${PROJECT_SOURCE_DIR}/vendor")
 set(ASSETS_DIR  "${PROJECT_SOURCE_DIR}/assets")
 
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${SOURCES_DIR}/*.cpp")
+set(
+    PROJECT_SOURCES
+    ${SOURCES_DIR}
+    ${SOURCES_DIR}/BSandbox/Main.cpp
+    ${SOURCES_DIR}/BEngine/Core/Transform3D.cpp
+    ${SOURCES_DIR}/BEngine/Core/Transform3D.hpp
+    ${SOURCES_DIR}/BEngine/Core/Application.cpp
+    ${SOURCES_DIR}/BEngine/Core/Event.hpp
+    ${SOURCES_DIR}/BEngine/Core/Memory.hpp
+    ${SOURCES_DIR}/BEngine/Core/FrameTimer.cpp
+    ${SOURCES_DIR}/BEngine/Core/FrameTimer.hpp
+    ${SOURCES_DIR}/BEngine/Core/Application.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/GLObject.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/GLUtils.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/IndexBuffer.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Shader.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Texture.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexArray.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexBuffer.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexBufferLayout.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Material.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Vertex.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexBufferLayout.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexArray.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/GLObject.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Texture.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/GLUtils.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Mesh.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexBufferAttribute.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Shader.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/VertexBuffer.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/IndexBuffer.hpp
+    ${SOURCES_DIR}/BEngine/Render/Model/Mesh.cpp
+    ${SOURCES_DIR}/BEngine/Render/Model/Model.cpp
+    ${SOURCES_DIR}/BEngine/Render/Model/Model.hpp
+    ${SOURCES_DIR}/BEngine/Render/Camera3D.cpp
+    ${SOURCES_DIR}/BEngine/Render/Camera3D.hpp
+    ${SOURCES_DIR}/BEngine/Render/Renderer.cpp
+    ${SOURCES_DIR}/BEngine/Render/Renderer.hpp
+    ${SOURCES_DIR}/BEngine/BadEngine.hpp
+    )
 
 add_definitions(-DGLEW_STATIC)
 set(BUILD_SHARED_LIBS OFF)
@@ -31,10 +70,10 @@ add_subdirectory("${VENDOR_DIR}/fmt"   EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/imgui" EXCLUDE_FROM_ALL)
 add_subdirectory("${VENDOR_DIR}/assimp" EXCLUDE_FROM_ALL)
 
-add_executable(${PROJECT_NAME} "${SOURCES_DIR}/main.cpp")
+add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${INLCUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${SOURCES_DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE libglew_static)

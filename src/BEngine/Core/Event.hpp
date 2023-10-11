@@ -1,14 +1,16 @@
-#ifndef EVENT_HPP_
-#define EVENT_HPP_
+#ifndef BADENGINE_CORE_EVENT_HPP_
+#define BADENGINE_CORE_EVENT_HPP_
 
 #include <algorithm>
-#include <vector>
 #include <functional>
+#include <vector>
 
-#include "glsandbox/Core/Refs.hpp"
+#include "Memory.hpp"
 
-template<typename... Args>
-using Proc = std::function<void(Args...)>;
+namespace be::core
+{
+
+template <typename... Args> using Proc = std::function<void(Args...)>;
 
 template <typename... Args> class Event
 {
@@ -56,5 +58,7 @@ public:
 private:
     std::vector<Ref<Callback>> m_Callbacks;
 };
+
+} // namespace be::core
 
 #endif // EVENT_HPP_

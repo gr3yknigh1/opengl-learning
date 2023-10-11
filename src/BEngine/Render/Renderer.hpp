@@ -5,6 +5,8 @@
 
 #include "glsandbox/Camera3D.hpp"
 
+namespace be::render {
+
 class Renderer
 {
 public:
@@ -17,5 +19,7 @@ public:
 
     static void EndDraw(void);
 };
+
+} // namespace be::render
 
 #endif // RENDERER_HPP_

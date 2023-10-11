@@ -1,4 +1,4 @@
-#include "glsandbox/Application.hpp"
+#include "Application.hpp"
 
 Ref<Application> Application::GetInstance(void)
 {

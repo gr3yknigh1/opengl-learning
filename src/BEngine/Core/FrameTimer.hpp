@@ -1,5 +1,5 @@
-#ifndef FRAMETIMER_HPP_
-#define FRAMETIMER_HPP_
+#ifndef BADENGINE_CORE_FRAMETIMER_HPP_
+#define BADENGINE_CORE_FRAMETIMER_HPP_
 
 #include <GLFW/glfw3.h>
 

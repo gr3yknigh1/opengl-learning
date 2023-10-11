@@ -1,14 +1,16 @@
-#ifndef CAMERA3D_HPP_
-#define CAMERA3D_HPP_
+#ifndef BADENGINE_RENDER_CAMERA3D_HPP_
+#define BADENGINE_RENDER_CAMERA3D_HPP_
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
 
-#include "glsandbox/Application.hpp"
-#include "glsandbox/Transform3D.hpp"
+#include "core/Application.hpp"
+#include "core/Transform3D.hpp"
+
+namespace be::render {
 
 class Camera3D
 {
@@ -50,5 +52,7 @@ private:
     float m_LastYPosition;
     bool m_FirstLastPositionAssignment;
 };
+
+}  // namespace be::render
 
 #endif // CAMERA3D_HPP_
