@@ -1,4 +1,4 @@
-.PHONY: fmt lint
+.PHONY: fmt lint clean
 
 
 fmt:
@@ -11,3 +11,5 @@ lint:
 	clang-tidy -p ./build ./src/*.cpp || true
 	clang-tidy -p ./build ./include/**/*.hpp || true
 
+clean:
+	rm -rf build/
