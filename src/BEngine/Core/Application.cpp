@@ -3,6 +3,7 @@
 #include "BEngine/Render/GL/Utils.hpp"
 
 using namespace BE::Core;
+using namespace BE::Core::Memory;
 
 Ref<Application> Application::GetInstance(void)
 {

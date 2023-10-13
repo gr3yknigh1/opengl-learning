@@ -6,9 +6,9 @@
 
 struct Material
 {
-    Ref<Texture> diffuse;
-    Ref<Texture> specular;
-    Ref<Texture> emission;
+    BE::Core::Memory::Ref<Texture> diffuse;
+    BE::Core::Memory::Ref<Texture> specular;
+    BE::Core::Memory::Ref<Texture> emission;
 };
 
 #endif // BENGINE_RENDER_GL_MATERIAL_HPP

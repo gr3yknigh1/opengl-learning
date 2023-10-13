@@ -3,6 +3,9 @@
 
 #include <GLFW/glfw3.h>
 
+namespace BE::Core
+{
+
 class FrameTimer
 {
 public:
@@ -17,5 +20,7 @@ private:
     float m_DeltaTime;
     float m_LastFrameTime;
 };
+
+} // namespace BE::Core
 
 #endif // BENGINE_CORE_FRAMETIMER_HPP

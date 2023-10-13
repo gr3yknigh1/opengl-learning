@@ -22,6 +22,7 @@ namespace BE::Core
 
 class Application
 {
+
 public:
     static inline bool IsCursorEnabled = true;
     static inline const glm::vec2 WindowSize = {900, 600};
@@ -30,7 +31,7 @@ public:
     static inline Event<GLFWwindow *, double, double> MouseEvent;
     static inline Event<GLFWwindow *, double, double> ScrollEvent;
 
-    static Ref<Application> GetInstance(void);
+    static Memory::Ref<Application> GetInstance(void);
 
     Application(GLFWwindow *window);
     ~Application(void);
@@ -47,7 +48,7 @@ public:
     }
 
 private:
-    static inline Ref<Application> s_Instance = nullptr;
+    static inline Memory::Ref<Application> s_Instance = nullptr;
 
     static void FrameBufferSizeCallback(GLFWwindow *window, int width, int height);
     static void ErrorHandler(int errorCode, const char *description);

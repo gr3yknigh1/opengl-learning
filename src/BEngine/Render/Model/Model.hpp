@@ -26,7 +26,7 @@ private:
     void LoadModel();
     void ProcessNode(aiNode *node, const aiScene *scene);
     Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Ref<Texture>> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType textureType);
+    std::vector<BE::Core::Memory::Ref<Texture>> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType textureType);
 };
 
 #endif // BENGINE_RENDER_MODEL_MODEL_HPP

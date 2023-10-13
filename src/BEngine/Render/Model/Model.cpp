@@ -6,6 +6,8 @@
 
 #include "BEngine/Render/Model/Model.hpp"
 
+using namespace BE::Core::Memory;
+
 Model::Model(const std::filesystem::path &path) : m_Path(path), m_Meshes()
 {
     LoadModel();
@@ -58,7 +60,7 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<Ref<Texture>> textures;
+    std::vector<BE::Core::Memory::Ref<Texture>> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {

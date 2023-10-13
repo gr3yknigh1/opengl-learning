@@ -7,7 +7,7 @@
 #include "BEngine/Render/GL/Texture.hpp"
 
 Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<uint32_t> indices,
-           const std::vector<Ref<Texture>> textures)
+           const std::vector<BE::Core::Memory::Ref<Texture>> textures)
     : m_Vertices(vertices), m_Indices(indices), m_Textures(textures), m_VertexArray(), m_VertexBuffer(vertices),
       m_IndexBuffer(indices)
 {
@@ -22,7 +22,7 @@ void Mesh::Draw(const Shader &shader) const
 
     for (uint32_t i = 0; i < m_Textures.size(); ++i)
     {
-        const Ref<Texture> &texture = m_Textures[i];
+        const auto &texture = m_Textures[i];
         texture->BindTo(i);
         const char *textureTypeStr = TextureTypeToString(texture->GetType());
 

@@ -1,5 +1,7 @@
 #include "BEngine/Core/FrameTimer.hpp"
 
+using namespace BE::Core;
+
 float FrameTimer::Tick(void)
 {
     float currentFrame = static_cast<float>(glfwGetTime());

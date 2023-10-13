@@ -17,23 +17,23 @@ template <typename... Args> class Event
 public:
     using Callback = Proc<Args...>;
 
-    void Subscribe(const Ref<Callback> &callback)
+    void Subscribe(const Memory::Ref<Callback> &callback)
     {
         m_Callbacks.push_back(callback);
     }
 
     void Invoke(Args... payload) const
     {
-        const auto callCallback = [=](Ref<Callback> callback) { (*(callback.get()))(payload...); };
+        const auto callCallback = [=](Memory::Ref<Callback> callback) { (*(callback.get()))(payload...); };
 
         std::for_each(m_Callbacks.begin(), m_Callbacks.end(), callCallback);
     }
 
-    void RemoveFirst(const Ref<Callback> &callbackToRemove)
+    void RemoveFirst(const Memory::Ref<Callback> &callbackToRemove)
     {
         const auto callbackSearchResult =
             std::find_if(m_Callbacks.cbegin(), m_Callbacks.cend(),
-                         [=](const Ref<Callback> &callback) { return callback.get() == callbackToRemove.get(); });
+                         [=](const Memory::Ref<Callback> &callback) { return callback.get() == callbackToRemove.get(); });
 
         if (callbackSearchResult != m_Callbacks.cend())
         {
@@ -46,13 +46,13 @@ public:
         m_Callbacks.erase(m_Callbacks.begin(), m_Callbacks.end());
     }
 
-    constexpr const std::vector<Ref<Callback>> &GetSubscribers(void) const
+    constexpr const std::vector<Memory::Ref<Callback>> &GetSubscribers(void) const
     {
         return m_Callbacks;
     }
 
 private:
-    std::vector<Ref<Callback>> m_Callbacks;
+    std::vector<Memory::Ref<Callback>> m_Callbacks;
 };
 
 } // namespace BE::Core

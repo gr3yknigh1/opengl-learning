@@ -3,6 +3,9 @@
 
 #include <memory>
 
+namespace BE::Core::Memory
+{
+
 // NOTE: Stoled from Hazel Engine (under Apache License 2.0)
 // <https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Hazel/Core/Base.h>
 
@@ -17,5 +20,7 @@ template <typename T, typename... Args> constexpr Ref<T> MakeRef(Args &&...args)
 {
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
+
+} // namespace BE::Core::Memory
 
 #endif // BENGINE_CORE_MEMORY_HPP

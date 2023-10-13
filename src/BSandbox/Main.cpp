@@ -42,6 +42,7 @@
 int main(void)
 {
     using namespace BE::Core;
+    using namespace BE::Core::Memory;
     using namespace BE::Render;
 
     const auto app = Application::GetInstance();
