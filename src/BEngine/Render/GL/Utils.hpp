@@ -1,5 +1,5 @@
-#ifndef GLUTILS_HPP_
-#define GLUTILS_HPP_
+#ifndef BENGINE_RENDER_GL_GLUTILS_HPP
+#define BENGINE_RENDER_GL_GLUTILS_HPP
 
 #include <cstdint>
 #include <iostream>
@@ -28,4 +28,4 @@ void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
         GL_CheckErrors(#__glExpr, __FILE__, __LINE__);                         \
     } while (0)
 
-#endif // GLUTILS_HPP_
+#endif // BENGINE_RENDER_GL_GLUTILS_HPP

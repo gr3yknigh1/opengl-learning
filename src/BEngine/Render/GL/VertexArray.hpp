@@ -3,9 +3,9 @@
 
 #include <GL/glew.h>
 
-#include "glsandbox/GLObject.hpp"
-#include "glsandbox/VertexBuffer.hpp"
-#include "glsandbox/VertexBufferLayout.hpp"
+#include "BEngine/Render/GL/GLObject.hpp"
+#include "BEngine/Render/GL/VertexBuffer.hpp"
+#include "BEngine/Render/GL/VertexBufferLayout.hpp"
 
 class VertexArray : public GLObject
 {

@@ -1,2 +1,0 @@
-#include "glsandbox/GLObject.hpp"
-

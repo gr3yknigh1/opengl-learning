@@ -1,5 +1,5 @@
-#ifndef GLOBJECT_HPP_
-#define GLOBJECT_HPP_
+#ifndef BENGINE_RENDER_GL_GLOBJECT_HPP
+#define BENGINE_RENDER_GL_GLOBJECT_HPP
 
 #include <cstdint>
 
@@ -18,4 +18,4 @@ protected:
     uint32_t m_Id;
 };
 
-#endif // GLOBJECT_HPP_
+#endif // BENGINE_RENDER_GL_GLOBJECT_HPP

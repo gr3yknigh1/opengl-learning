@@ -1,10 +1,11 @@
 #ifndef MATERIAL_HPP_
 #define MATERIAL_HPP_
 
-#include "glsandbox/Texture.hpp"
-#include "glsandbox/Core/Refs.hpp"
+#include "BEngine/Core/Memory.hpp"
+#include "BEngine/Render/GL/Texture.hpp"
 
-struct Material {
+struct Material
+{
     Ref<Texture> diffuse;
     Ref<Texture> specular;
     Ref<Texture> emission;

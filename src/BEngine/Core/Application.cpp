@@ -1,4 +1,8 @@
-#include "Application.hpp"
+#include "BEngine/Core/Application.hpp"
+
+#include "BEngine/Render/GL/Utils.hpp"
+
+using namespace BE::Core;
 
 Ref<Application> Application::GetInstance(void)
 {
@@ -172,23 +176,23 @@ const char *Application::ErrorCodeDispatch(int errorCode)
     switch (errorCode)
     {
     case GLFW_NOT_INITIALIZED:
-        return STRINGIFY(GLFW_NOT_INITIALIZED);
+        return BE_STRINGIFY(GLFW_NOT_INITIALIZED);
     case GLFW_NO_CURRENT_CONTEXT:
-        return STRINGIFY(GLFW_NO_CURRENT_CONTEXT);
+        return BE_STRINGIFY(GLFW_NO_CURRENT_CONTEXT);
     case GLFW_INVALID_ENUM:
-        return STRINGIFY(GLFW_INVALID_ENUM);
+        return BE_STRINGIFY(GLFW_INVALID_ENUM);
     case GLFW_OUT_OF_MEMORY:
-        return STRINGIFY(GLFW_OUT_OF_MEMORY);
+        return BE_STRINGIFY(GLFW_OUT_OF_MEMORY);
     case GLFW_API_UNAVAILABLE:
-        return STRINGIFY(GLFW_API_UNAVAILABLE);
+        return BE_STRINGIFY(GLFW_API_UNAVAILABLE);
     case GLFW_VERSION_UNAVAILABLE:
-        return STRINGIFY(GLFW_VERSION_UNAVAILABLE);
+        return BE_STRINGIFY(GLFW_VERSION_UNAVAILABLE);
     case GLFW_PLATFORM_ERROR:
-        return STRINGIFY(GLFW_PLATFORM_ERROR);
+        return BE_STRINGIFY(GLFW_PLATFORM_ERROR);
     case GLFW_FORMAT_UNAVAILABLE:
-        return STRINGIFY(GLFW_FORMAT_UNAVAILABLE);
+        return BE_STRINGIFY(GLFW_FORMAT_UNAVAILABLE);
     case GLFW_NO_WINDOW_CONTEXT:
-        return STRINGIFY(GLFW_NO_WINDOW_CONTEXT);
+        return BE_STRINGIFY(GLFW_NO_WINDOW_CONTEXT);
     default:
         return "GLFW_UNHANDLED_ERROR";
     }

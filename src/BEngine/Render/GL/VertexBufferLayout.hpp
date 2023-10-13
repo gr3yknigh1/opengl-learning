@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "glsandbox/VertexBufferAttribute.hpp"
+#include "BEngine/Render/GL/VertexBufferAttribute.hpp"
 
 class VertexBufferLayout
 {

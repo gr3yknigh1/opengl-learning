@@ -8,7 +8,7 @@
 
 #include <glm/glm.hpp>
 
-#include "glsandbox/GLObject.hpp"
+#include "BEngine/Render/GL/GLObject.hpp"
 
 // TODO: Separate shader compilation login in `ShaderTranslationUnit` and leave
 // here only shader program logic

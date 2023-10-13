@@ -13,17 +13,20 @@ set(ASSETS_DIR  "${PROJECT_SOURCE_DIR}/assets")
 set(
     PROJECT_SOURCES
     ${SOURCES_DIR}
+
     ${SOURCES_DIR}/BSandbox/Main.cpp
-    ${SOURCES_DIR}/BEngine/Core/Transform3D.cpp
-    ${SOURCES_DIR}/BEngine/Core/Transform3D.hpp
+
+    ${SOURCES_DIR}/BEngine/BEngine.hpp
+
+    ${SOURCES_DIR}/BEngine/Core/Application.hpp
     ${SOURCES_DIR}/BEngine/Core/Application.cpp
     ${SOURCES_DIR}/BEngine/Core/Event.hpp
-    ${SOURCES_DIR}/BEngine/Core/Memory.hpp
     ${SOURCES_DIR}/BEngine/Core/FrameTimer.cpp
     ${SOURCES_DIR}/BEngine/Core/FrameTimer.hpp
-    ${SOURCES_DIR}/BEngine/Core/Application.hpp
-    ${SOURCES_DIR}/BEngine/Render/GL/GLObject.cpp
-    ${SOURCES_DIR}/BEngine/Render/GL/GLUtils.cpp
+    ${SOURCES_DIR}/BEngine/Core/Memory.hpp
+    ${SOURCES_DIR}/BEngine/Core/Transform3D.hpp
+    ${SOURCES_DIR}/BEngine/Core/Transform3D.cpp
+
     ${SOURCES_DIR}/BEngine/Render/GL/IndexBuffer.cpp
     ${SOURCES_DIR}/BEngine/Render/GL/Shader.cpp
     ${SOURCES_DIR}/BEngine/Render/GL/Texture.cpp
@@ -36,20 +39,24 @@ set(
     ${SOURCES_DIR}/BEngine/Render/GL/VertexArray.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/GLObject.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/Texture.hpp
-    ${SOURCES_DIR}/BEngine/Render/GL/GLUtils.hpp
-    ${SOURCES_DIR}/BEngine/Render/GL/Mesh.hpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Utils.cpp
+    ${SOURCES_DIR}/BEngine/Render/GL/Utils.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/VertexBufferAttribute.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/Shader.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/VertexBuffer.hpp
     ${SOURCES_DIR}/BEngine/Render/GL/IndexBuffer.hpp
+
+    ${SOURCES_DIR}/BEngine/Render/Model/Mesh.hpp
     ${SOURCES_DIR}/BEngine/Render/Model/Mesh.cpp
+
     ${SOURCES_DIR}/BEngine/Render/Model/Model.cpp
     ${SOURCES_DIR}/BEngine/Render/Model/Model.hpp
+
     ${SOURCES_DIR}/BEngine/Render/Camera3D.cpp
     ${SOURCES_DIR}/BEngine/Render/Camera3D.hpp
     ${SOURCES_DIR}/BEngine/Render/Renderer.cpp
     ${SOURCES_DIR}/BEngine/Render/Renderer.hpp
-    ${SOURCES_DIR}/BEngine/BadEngine.hpp
+
     )
 
 add_definitions(-DGLEW_STATIC)

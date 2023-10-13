@@ -1,10 +1,10 @@
-#include "Camera3D.hpp"
+#include "BEngine/Render/Camera3D.hpp"
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
-using namespace be::core;
-using namespace be::render;
+using namespace BE::Core;
+using namespace BE::Render;
 
 Camera3D::Camera3D(const Transform3D &transform, float fov, float sensitivity,
                    bool isYInverse, float speed, float speedModifier)

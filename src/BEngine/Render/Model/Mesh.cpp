@@ -2,8 +2,9 @@
 
 #include <fmt/format.h>
 
-#include "glsandbox/Mesh.hpp"
-#include "glsandbox/Texture.hpp"
+#include "BEngine/Render/Model/Mesh.hpp"
+
+#include "BEngine/Render/GL/Texture.hpp"
 
 Mesh::Mesh(const std::vector<Vertex> vertices,
            const std::vector<uint32_t> indices,

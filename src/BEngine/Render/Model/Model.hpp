@@ -6,9 +6,11 @@
 
 #include <assimp/scene.h>
 
-#include "glsandbox/Core/Refs.hpp"
-#include "glsandbox/Mesh.hpp"
-#include "glsandbox/Shader.hpp"
+#include "BEngine/Core/Memory.hpp"
+
+#include "BEngine/Render/Model/Mesh.hpp"
+
+#include "BEngine/Render/GL/Shader.hpp"
 
 class Model
 {

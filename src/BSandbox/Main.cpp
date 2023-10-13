@@ -6,34 +6,46 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <fmt/format.h>
+
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_projection.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "glm/ext/matrix_transform.hpp"
-#include "glsandbox/Application.hpp"
-#include "glsandbox/Camera3D.hpp"
-#include "glsandbox/FrameTimer.hpp"
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/IndexBuffer.hpp"
-#include "glsandbox/Model.hpp"
-#include "glsandbox/Renderer/Renderer.hpp"
-#include "glsandbox/Shader.hpp"
-#include "glsandbox/Texture.hpp"
-#include "glsandbox/Transform3D.hpp"
-#include "glsandbox/VertexArray.hpp"
-#include "glsandbox/VertexBufferLayout.hpp"
-#include "glsandbox/defs.hpp"
+#include "BEngine/BEngine.hpp"
+
+#include "BEngine/Core/Application.hpp"
+#include "BEngine/Core/FrameTimer.hpp"
+#include "BEngine/Core/Transform3D.hpp"
+
+#include "BEngine/Render/Camera3D.hpp"
+#include "BEngine/Render/Renderer.hpp"
+
+#include "BEngine/Render/GL/IndexBuffer.hpp"
+#include "BEngine/Render/GL/Shader.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
+
+#include "BEngine/Render/Model/Model.hpp"
+
+#include "BEngine/Render/GL/Texture.hpp"
+#include "BEngine/Render/GL/VertexArray.hpp"
+#include "BEngine/Render/GL/VertexBufferLayout.hpp"
 
 int main(void)
 {
-    const Ref<Application> app = Application::GetInstance();
+    using namespace BE::Core;
+    using namespace BE::Render;
+
+    const auto app = Application::GetInstance();
+
     Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
     app->MouseEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
@@ -202,9 +214,10 @@ int main(void)
         // {
         //     glm::mat4 cubeModel = model;
         //     cubeModel =
-        //         glm::rotate(cubeModel, 20.0f * i, glm::vec3(1.0f, 0.0f, 0.0f));
+        //         glm::rotate(cubeModel, 20.0f * i, glm::vec3(1.0f, 0.0f,
+        //         0.0f));
         //     cubeModel = glm::scale(cubeModel, {1, 1, 1});
-            // cubeModel = glm::translate(cubeModel, cubePositions[i]);
+        // cubeModel = glm::translate(cubeModel, cubePositions[i]);
         //     cubeShader.SetUniform("u_Model", cubeModel);
         //     GL_Call(glDrawArrays(GL_TRIANGLES, 0, 36));
         // }

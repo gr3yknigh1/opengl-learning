@@ -5,8 +5,8 @@
 
 #include <GL/glew.h>
 
-#include "glsandbox/GLObject.hpp"
-#include "glsandbox/GLUtils.hpp"
+#include "BEngine/Render/GL/GLObject.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
 
 class VertexBuffer : public GLObject
 {

@@ -1,23 +1,24 @@
-#ifndef BADENGINE_CORE_APPLICATION_HPP_
-#define BADENGINE_CORE_APPLICATION_HPP_
+#ifndef BADENGINE_CORE_APPLICATION_HPP
+#define BADENGINE_CORE_APPLICATION_HPP
 
 #include <vector>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "Refs.hpp"
-#include "Event.hpp"
-#include "Window.hpp"
-#include "BadEngine.hpp"
-#include "render/gl/GLUtils.hpp"
+#include "BEngine/BEngine.hpp"
 
-namespace be::core {
+#include "BEngine/Core/Event.hpp"
+#include "BEngine/Core/Memory.hpp"
+
+namespace BE::Core
+{
 
 class Application
 {
@@ -65,7 +66,6 @@ private:
     GLFWwindow *m_Window;
 };
 
+} // namespace BE::Core
 
-}  // namespace be::core
-
-#endif // APPLICATION_HPP_
+#endif // BADENGINE_CORE_APPLICATION_HPP

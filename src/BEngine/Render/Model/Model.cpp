@@ -4,7 +4,7 @@
 #include <assimp/postprocess.h>
 #include <fmt/core.h>
 
-#include "glsandbox/Model.hpp"
+#include "BEngine/Render/Model/Model.hpp"
 
 Model::Model(const std::filesystem::path &path) : m_Path(path), m_Meshes()
 {

@@ -1,10 +1,7 @@
 .PHONY: fmt lint clean
 
 SOURCES :=
-SOURCES += $(wildcard ./src/*.cpp)
-SOURCES += $(wildcard ./src/**/.cpp)
-SOURCES += $(wildcard ./src/*.hpp)
-SOURCES += $(wildcard ./src/**/.hpp)
+SOURCES += $(shell find src/ -type f -regex ".*.[cpp,hpp]$$")
 
 
 fmt:

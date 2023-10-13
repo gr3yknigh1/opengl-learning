@@ -1,4 +1,4 @@
 BasedOnStyle: Microsoft
 Language: Cpp
-ColumnLimit: 80
+ColumnLimit: 120
 AccessModifierOffset: -4

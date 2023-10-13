@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "glsandbox/GLObject.hpp"
+#include "BEngine/Render/GL/GLObject.hpp"
 
 class IndexBuffer : public GLObject
 {

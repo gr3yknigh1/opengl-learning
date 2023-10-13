@@ -4,12 +4,13 @@
 #include <cstdint>
 #include <vector>
 
-#include "glsandbox/Core/Refs.hpp"
-#include "glsandbox/IndexBuffer.hpp"
-#include "glsandbox/Shader.hpp"
-#include "glsandbox/Texture.hpp"
-#include "glsandbox/Vertex.hpp"
-#include "glsandbox/VertexArray.hpp"
+#include "BEngine/Core/Memory.hpp"
+
+#include "BEngine/Render/GL/IndexBuffer.hpp"
+#include "BEngine/Render/GL/Shader.hpp"
+#include "BEngine/Render/GL/Texture.hpp"
+#include "BEngine/Render/GL/Vertex.hpp"
+#include "BEngine/Render/GL/VertexArray.hpp"
 
 // NOTE: I don't like way that guide say to deal with textures.
 // TODO: Find way to make it more convinient later.

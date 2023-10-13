@@ -1,8 +1,10 @@
-#include "glsandbox/Renderer/Renderer.hpp"
+#include "BEngine/Render/Renderer.hpp"
 
 #include <GL/glew.h>
 
-#include "glsandbox/GLUtils.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
+
+using namespace BE::Render;
 
 void Renderer::BeginDraw(const Camera3D &camera)
 {

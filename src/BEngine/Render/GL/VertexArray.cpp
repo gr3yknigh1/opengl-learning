@@ -1,7 +1,8 @@
+#include "VertexArray.hpp"
+
 #include <cstdint>
 
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/VertexArray.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
 
 VertexArray::VertexArray()
 {

@@ -7,10 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "core/Application.hpp"
-#include "core/Transform3D.hpp"
+#include "BEngine/Core/Application.hpp"
+#include "BEngine/Core/Transform3D.hpp"
 
-namespace be::render {
+namespace BE::Render
+{
 
 class Camera3D
 {
@@ -53,6 +54,6 @@ private:
     bool m_FirstLastPositionAssignment;
 };
 
-}  // namespace be::render
+} // namespace BE::Render
 
 #endif // CAMERA3D_HPP_

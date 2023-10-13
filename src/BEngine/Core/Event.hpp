@@ -7,7 +7,7 @@
 
 #include "Memory.hpp"
 
-namespace be::core
+namespace BE::Core
 {
 
 template <typename... Args> using Proc = std::function<void(Args...)>;
@@ -59,6 +59,6 @@ private:
     std::vector<Ref<Callback>> m_Callbacks;
 };
 
-} // namespace be::core
+} // namespace BE::Core
 
 #endif // EVENT_HPP_

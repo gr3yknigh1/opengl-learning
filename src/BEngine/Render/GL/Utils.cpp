@@ -1,9 +1,10 @@
+#include "BEngine/Render/GL/Utils.hpp"
+
 #include <stdexcept>
 
 #include <fmt/format.h>
 
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/defs.hpp"
+#include "BEngine/BEngine.hpp"
 
 /*
  *
@@ -14,21 +15,21 @@ const char *GLEW_ErrorCodeDispatch(int errorCode)
     switch (errorCode)
     {
     case GL_NO_ERROR:
-        return STRINGIFY(GL_NO_ERROR);
+        return BE_STRINGIFY(GL_NO_ERROR);
     case GL_INVALID_ENUM:
-        return STRINGIFY(GL_INVALID_ENUM);
+        return BE_STRINGIFY(GL_INVALID_ENUM);
     case GL_INVALID_VALUE:
-        return STRINGIFY(GL_INVALID_VALUE);
+        return BE_STRINGIFY(GL_INVALID_VALUE);
     case GL_INVALID_OPERATION:
-        return STRINGIFY(GL_INVALID_OPERATION);
+        return BE_STRINGIFY(GL_INVALID_OPERATION);
     case GL_INVALID_FRAMEBUFFER_OPERATION:
-        return STRINGIFY(GL_INVALID_FRAMEBUFFER_OPERATION);
+        return BE_STRINGIFY(GL_INVALID_FRAMEBUFFER_OPERATION);
     case GL_OUT_OF_MEMORY:
-        return STRINGIFY(GL_OUT_OF_MEMORY);
+        return BE_STRINGIFY(GL_OUT_OF_MEMORY);
     case GL_STACK_UNDERFLOW:
-        return STRINGIFY(GL_STACK_UNDERFLOW);
+        return BE_STRINGIFY(GL_STACK_UNDERFLOW);
     case GL_STACK_OVERFLOW:
-        return STRINGIFY(GL_STACK_OVERFLOW);
+        return BE_STRINGIFY(GL_STACK_OVERFLOW);
     default:
         return "GL_UNHANDLED_ERROR";
     }

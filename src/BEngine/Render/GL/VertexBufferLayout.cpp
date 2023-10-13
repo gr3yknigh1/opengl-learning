@@ -1,4 +1,4 @@
-#include "glsandbox/VertexBufferLayout.hpp"
+#include "BEngine/Render/GL/VertexBufferLayout.hpp"
 
 #include <GL/glew.h>
 

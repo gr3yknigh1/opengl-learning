@@ -8,8 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/Shader.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
+#include "BEngine/Render/GL/Shader.hpp"
 
 static const std::size_t GL_SHADER_COMPILATION_LOG_BUFFER_SIZE = 512;
 

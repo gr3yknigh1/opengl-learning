@@ -2,8 +2,8 @@
 
 #include <GL/glew.h>
 
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/IndexBuffer.hpp"
+#include "BEngine/Render/GL/IndexBuffer.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
 
 IndexBuffer::IndexBuffer(const uint32_t *indices, const uint64_t count)
     : m_Count(count)

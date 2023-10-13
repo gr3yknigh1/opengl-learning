@@ -4,8 +4,8 @@
 #include <fmt/format.h>
 #include <stb_image.h>
 
-#include "glsandbox/GLUtils.hpp"
-#include "glsandbox/Texture.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
+#include "BEngine/Render/GL/Texture.hpp"
 
 const char *TextureTypeToString(TextureType type)
 {

@@ -1,4 +1,4 @@
-#include "glsandbox/FrameTimer.hpp"
+#include "BEngine/Core/FrameTimer.hpp"
 
 float FrameTimer::Tick(void)
 {

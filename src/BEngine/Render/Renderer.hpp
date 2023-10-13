@@ -3,9 +3,10 @@
 
 #include <glm/glm.hpp>
 
-#include "glsandbox/Camera3D.hpp"
+#include "BEngine/Render/Camera3D.hpp"
 
-namespace be::render {
+namespace BE::Render
+{
 
 class Renderer
 {
@@ -20,6 +21,6 @@ public:
     static void EndDraw(void);
 };
 
-} // namespace be::render
+} // namespace BE::Render
 
 #endif // RENDERER_HPP_
