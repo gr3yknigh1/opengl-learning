@@ -1,5 +1,5 @@
-#ifndef RENDERER_HPP_
-#define RENDERER_HPP_
+#ifndef BENGINE_RENDER_RENDERER_HPP
+#define BENGINE_RENDER_RENDERER_HPP
 
 #include <glm/glm.hpp>
 
@@ -23,4 +23,4 @@ public:
 
 } // namespace BE::Render
 
-#endif // RENDERER_HPP_
+#endif // BENGINE_RENDER_RENDERER_HPP

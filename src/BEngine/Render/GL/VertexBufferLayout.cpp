@@ -6,8 +6,7 @@ VertexBufferLayout::VertexBufferLayout() : m_Stride(0)
 {
 }
 
-const std::vector<VertexBufferAttribute> VertexBufferLayout::GetAttributes()
-    const
+const std::vector<VertexBufferAttribute> VertexBufferLayout::GetAttributes() const
 {
     return m_Attributes;
 }

@@ -6,11 +6,10 @@
 using namespace BE::Core;
 using namespace BE::Render;
 
-Camera3D::Camera3D(const Transform3D &transform, float fov, float sensitivity,
-                   bool isYInverse, float speed, float speedModifier)
-    : m_Transform(transform), m_Fov(fov), m_Sensitivity(sensitivity),
-      m_Speed(speed), m_SpeedModifier(speedModifier), m_IsYInverse(isYInverse),
-      m_Front(0, 0, -1), m_Up(0, 1, 0), m_LastXPosition(900.0f / 2),
+Camera3D::Camera3D(const Transform3D &transform, float fov, float sensitivity, bool isYInverse, float speed,
+                   float speedModifier)
+    : m_Transform(transform), m_Fov(fov), m_Sensitivity(sensitivity), m_Speed(speed), m_SpeedModifier(speedModifier),
+      m_IsYInverse(isYInverse), m_Front(0, 0, -1), m_Up(0, 1, 0), m_LastXPosition(900.0f / 2),
       m_LastYPosition(600.0f / 2), m_FirstLastPositionAssignment(true)
 {
 }
@@ -49,11 +48,9 @@ void Camera3D::Rotate(float xPosition, float yPosition)
         m_Transform.Rotation.x = -89.0f;
 
     glm::vec3 newFront;
-    newFront.x = cos(glm::radians(m_Transform.Rotation.y)) *
-                 cos(glm::radians(m_Transform.Rotation.x));
+    newFront.x = cos(glm::radians(m_Transform.Rotation.y)) * cos(glm::radians(m_Transform.Rotation.x));
     newFront.y = sin(glm::radians(m_Transform.Rotation.x));
-    newFront.z = sin(glm::radians(m_Transform.Rotation.y)) *
-                 cos(glm::radians(m_Transform.Rotation.x));
+    newFront.z = sin(glm::radians(m_Transform.Rotation.y)) * cos(glm::radians(m_Transform.Rotation.x));
     m_Front = glm::normalize(newFront);
 }
 
@@ -103,29 +100,24 @@ void Camera3D::Update(GLFWwindow *window, float deltaTime)
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        m_Transform.Position -= glm::normalize(glm::cross(m_Front, m_Up)) *
-                                currentSpeed * deltaTime;
+        m_Transform.Position -= glm::normalize(glm::cross(m_Front, m_Up)) * currentSpeed * deltaTime;
     }
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        m_Transform.Position += glm::normalize(glm::cross(m_Front, m_Up)) *
-                                currentSpeed * deltaTime;
+        m_Transform.Position += glm::normalize(glm::cross(m_Front, m_Up)) * currentSpeed * deltaTime;
     }
 }
 
 glm::mat4 Camera3D::GetViewMatrix(void) const
 {
-    return glm::lookAt(m_Transform.Position, m_Transform.Position + m_Front,
-                       m_Up);
+    return glm::lookAt(m_Transform.Position, m_Transform.Position + m_Front, m_Up);
 }
 
 glm::mat4 Camera3D::GetProjectionMatrix(void) const
 {
     // TODO: Expose to paramteres zNear and zFar
-    return glm::perspective(
-        glm::radians(m_Fov),
-        Application::WindowSize.x / Application::WindowSize.y, 0.1f, 100.0f);
+    return glm::perspective(glm::radians(m_Fov), Application::WindowSize.x / Application::WindowSize.y, 0.1f, 100.0f);
 }
 
 void Camera3D::DrawImGUI(void)

@@ -1,5 +1,5 @@
-#ifndef VERTEXBUFFERATTRIBUTE_HPP_
-#define VERTEXBUFFERATTRIBUTE_HPP_
+#ifndef BENGINE_RENDER_GL_VERTEXBUFFERATTRIBUTE_HPP
+#define BENGINE_RENDER_GL_VERTEXBUFFERATTRIBUTE_HPP
 
 #include <cstddef>
 #include <cstdint>
@@ -11,11 +11,10 @@ struct VertexBufferAttribute
     const std::size_t size;
     const bool isNormalized;
 
-    VertexBufferAttribute(uint32_t _type, uint32_t _count, std::size_t _size,
-                          bool _isNormalized)
+    VertexBufferAttribute(uint32_t _type, uint32_t _count, std::size_t _size, bool _isNormalized)
         : type(_type), count(_count), size(_size), isNormalized(_isNormalized)
     {
     }
 };
 
-#endif // VERTEXBUFFERATTRIBUTE_HPP_
+#endif // BENGINE_RENDER_GL_VERTEXBUFFERATTRIBUTE_HPP

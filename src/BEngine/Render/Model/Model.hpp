@@ -1,5 +1,5 @@
-#ifndef MODEL_HPP_
-#define MODEL_HPP_
+#ifndef BENGINE_RENDER_MODEL_MODEL_HPP
+#define BENGINE_RENDER_MODEL_MODEL_HPP
 
 #include <filesystem>
 #include <vector>
@@ -8,9 +8,9 @@
 
 #include "BEngine/Core/Memory.hpp"
 
-#include "BEngine/Render/Model/Mesh.hpp"
-
 #include "BEngine/Render/GL/Shader.hpp"
+
+#include "BEngine/Render/Model/Mesh.hpp"
 
 class Model
 {
@@ -26,9 +26,7 @@ private:
     void LoadModel();
     void ProcessNode(aiNode *node, const aiScene *scene);
     Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Ref<Texture>> LoadMaterialTextures(aiMaterial *mat,
-                                                   aiTextureType type,
-                                                   TextureType textureType);
+    std::vector<Ref<Texture>> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType textureType);
 };
 
-#endif // MODEL_HPP_
+#endif // BENGINE_RENDER_MODEL_MODEL_HPP

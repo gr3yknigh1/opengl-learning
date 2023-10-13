@@ -19,8 +19,7 @@ void VertexArray::Unbind() const
     GL_Call(glBindVertexArray(0));
 }
 
-void VertexArray::AddBuffer(const VertexBuffer &vb,
-                            const VertexBufferLayout &layout)
+void VertexArray::AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout)
 {
     Bind();
     vb.Bind();
@@ -32,10 +31,8 @@ void VertexArray::AddBuffer(const VertexBuffer &vb,
         const auto &attribute = attributes[i];
 
         GL_Call(glEnableVertexAttribArray(i));
-        GL_Call(glVertexAttribPointer(i, static_cast<int>(attribute.count),
-                                      attribute.type, attribute.isNormalized,
-                                      static_cast<int>(layout.GetStride()),
-                                      reinterpret_cast<const void *>(offset)));
+        GL_Call(glVertexAttribPointer(i, static_cast<int>(attribute.count), attribute.type, attribute.isNormalized,
+                                      static_cast<int>(layout.GetStride()), reinterpret_cast<const void *>(offset)));
         offset += static_cast<uint64_t>(attribute.count) * attribute.size;
     }
 }

@@ -1,5 +1,5 @@
-#ifndef MATERIAL_HPP_
-#define MATERIAL_HPP_
+#ifndef BENGINE_RENDER_GL_MATERIAL_HPP
+#define BENGINE_RENDER_GL_MATERIAL_HPP
 
 #include "BEngine/Core/Memory.hpp"
 #include "BEngine/Render/GL/Texture.hpp"
@@ -11,4 +11,4 @@ struct Material
     Ref<Texture> emission;
 };
 
-#endif // MATERIAL_HPP_
+#endif // BENGINE_RENDER_GL_MATERIAL_HPP

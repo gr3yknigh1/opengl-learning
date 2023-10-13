@@ -1,5 +1,5 @@
-#ifndef BADENGINE_CORE_APPLICATION_HPP
-#define BADENGINE_CORE_APPLICATION_HPP
+#ifndef BENGINE_CORE_APPLICATION_HPP
+#define BENGINE_CORE_APPLICATION_HPP
 
 #include <vector>
 
@@ -49,23 +49,19 @@ public:
 private:
     static inline Ref<Application> s_Instance = nullptr;
 
-    static void FrameBufferSizeCallback(GLFWwindow *window, int width,
-                                        int height);
+    static void FrameBufferSizeCallback(GLFWwindow *window, int width, int height);
     static void ErrorHandler(int errorCode, const char *description);
-    static void KeyCallback(GLFWwindow *window, int key, int scancode,
-                            int action, int mods);
+    static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     static const char *ErrorCodeDispatch(int errorCode);
 
-    static void MouseCallback(GLFWwindow *window, double xPosition,
-                              double yPosition);
+    static void MouseCallback(GLFWwindow *window, double xPosition, double yPosition);
 
-    static void ScrollCallback(GLFWwindow *window, double xOffset,
-                               double yOffset);
+    static void ScrollCallback(GLFWwindow *window, double xOffset, double yOffset);
 
     GLFWwindow *m_Window;
 };
 
 } // namespace BE::Core
 
-#endif // BADENGINE_CORE_APPLICATION_HPP
+#endif // BENGINE_CORE_APPLICATION_HPP

@@ -26,8 +26,7 @@ Ref<Application> Application::GetInstance(void)
     // TODO: Move to params
     const char *title = "Triangle";
     GLFWwindow *window =
-        glfwCreateWindow(Application::WindowSize.x, Application::WindowSize.y,
-                         title, nullptr, nullptr);
+        glfwCreateWindow(Application::WindowSize.x, Application::WindowSize.y, title, nullptr, nullptr);
 
     if (!window)
     {
@@ -53,8 +52,7 @@ Ref<Application> Application::GetInstance(void)
         std::exit(EXIT_FAILURE);
     }
 
-    GL_Call(
-        glViewport(0, 0, Application::WindowSize.x, Application::WindowSize.y));
+    GL_Call(glViewport(0, 0, Application::WindowSize.x, Application::WindowSize.y));
     GL_Call(glEnable(GL_BLEND));
     GL_Call(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GL_Call(glEnable(GL_DEPTH_TEST));
@@ -143,20 +141,18 @@ void Application::PollEvents(void) const
     glfwPollEvents();
 }
 
-void Application::FrameBufferSizeCallback(GLFWwindow *window, int width,
-                                          int height)
+void Application::FrameBufferSizeCallback(GLFWwindow *window, int width, int height)
 {
     GL_Call(glViewport(0, 0, width, height));
 }
 
 void Application::ErrorHandler(int errorCode, const char *description)
 {
-    std::printf("[GLFW]: %s - error code %d, description: '%s'\n",
-                ErrorCodeDispatch(errorCode), errorCode, description);
+    std::printf("[GLFW]: %s - error code %d, description: '%s'\n", ErrorCodeDispatch(errorCode), errorCode,
+                description);
 }
 
-void Application::KeyCallback(GLFWwindow *window, int key, int scancode,
-                              int action, int mods)
+void Application::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     KeyboardEvent.Invoke(window, key, scancode, action, mods);
 
@@ -200,14 +196,12 @@ const char *Application::ErrorCodeDispatch(int errorCode)
     return nullptr;
 }
 
-void Application::MouseCallback(GLFWwindow *window, double xPosition,
-                                double yPosition)
+void Application::MouseCallback(GLFWwindow *window, double xPosition, double yPosition)
 {
     MouseEvent.Invoke(window, xPosition, yPosition);
 }
 
-void Application::ScrollCallback(GLFWwindow *window, double xOffset,
-                                 double yOffset)
+void Application::ScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
 {
     ScrollEvent.Invoke(window, xOffset, yOffset);
 }

@@ -7,7 +7,6 @@
 #include "BEngine/BEngine.hpp"
 
 /*
- *
  * Checkout all errors at <https://docs.gl/gl4/glGetError>
  * */
 const char *GLEW_ErrorCodeDispatch(int errorCode)
@@ -42,14 +41,12 @@ void GL_ClearErrors()
         ;
 }
 
-void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath,
-                    uint32_t sourceLine)
+void GL_CheckErrors(const char *glFunctionName, const char *sourceFilePath, uint32_t sourceLine)
 {
     while (GLenum errorCode = glGetError())
     {
-        throw std::runtime_error(fmt::format(
-            "[GL]: {} - error code {}\n[GL]: Occured at {}::{} during {} call",
-            GLEW_ErrorCodeDispatch(errorCode), errorCode, sourceFilePath,
-            sourceLine, glFunctionName));
+        throw std::runtime_error(fmt::format("[GL]: {} - error code {}\n[GL]: Occured at {}::{} during {} call",
+                                             GLEW_ErrorCodeDispatch(errorCode), errorCode, sourceFilePath, sourceLine,
+                                             glFunctionName));
     }
 }

@@ -23,20 +23,16 @@ void Model::LoadModel()
 {
     if (!std::filesystem::exists(m_Path))
     {
-        const std::string errorMessage = fmt::format(
-            "Failed loading model: path doens't exists '{}'", m_Path.c_str());
+        const std::string errorMessage = fmt::format("Failed loading model: path doens't exists '{}'", m_Path.c_str());
         throw std::invalid_argument(errorMessage);
     }
 
     Assimp::Importer importer;
-    const aiScene *scene =
-        importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
-        !scene->mRootNode)
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        const std::string errorMessage = fmt::format(
-            "Error loading Asimp scene: {}", importer.GetErrorString());
+        const std::string errorMessage = fmt::format("Error loading Asimp scene: {}", importer.GetErrorString());
         throw std::invalid_argument(errorMessage);
     }
 
@@ -112,21 +108,18 @@ Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     // {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-    std::vector<Ref<Texture>> diffuseMaps = LoadMaterialTextures(
-        material, aiTextureType_DIFFUSE, TextureType::Diffuse);
+    std::vector<Ref<Texture>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::Diffuse);
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    std::vector<Ref<Texture>> specularMaps = LoadMaterialTextures(
-        material, aiTextureType_SPECULAR, TextureType::Specular);
+    std::vector<Ref<Texture>> specularMaps =
+        LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::Specular);
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // }
 
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Ref<Texture>> Model::LoadMaterialTextures(aiMaterial *mat,
-                                                      aiTextureType type,
-                                                      TextureType textureType)
+std::vector<Ref<Texture>> Model::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType textureType)
 {
     std::vector<Ref<Texture>> textures;
 
@@ -134,8 +127,7 @@ std::vector<Ref<Texture>> Model::LoadMaterialTextures(aiMaterial *mat,
     {
         aiString path;
         mat->GetTexture(type, i, &path);
-        Ref<Texture> texture = MakeRef<Texture>(
-            m_Path.parent_path().append(path.C_Str()), textureType);
+        Ref<Texture> texture = MakeRef<Texture>(m_Path.parent_path().append(path.C_Str()), textureType);
         textures.push_back(texture);
     }
     std::cout << textures.size() << '\n';

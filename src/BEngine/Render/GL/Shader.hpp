@@ -1,5 +1,5 @@
-#ifndef SHADER_HPP_
-#define SHADER_HPP_
+#ifndef BENGINE_RENDER_GL_SHADER_HPP
+#define BENGINE_RENDER_GL_SHADER_HPP
 
 #include <cstdint>
 #include <filesystem>
@@ -20,8 +20,7 @@ public:
     void Bind() const;
     void Unbind() const;
 
-    const std::optional<uint32_t> TryGetUniformLocation(
-        const std::string &name) const;
+    const std::optional<uint32_t> TryGetUniformLocation(const std::string &name) const;
 
     void SetUniform(const std::string &name, bool value) const;
     void SetUniform(const std::string &name, int32_t value) const;
@@ -36,14 +35,12 @@ public:
                                   const std::filesystem::path &fragmentSource);
 
     // TODO: Replace `shaderType` with enumerator
-    static uint32_t CompileShader(const std::filesystem::path &shaderFilePath,
-                                  int shaderType);
+    static uint32_t CompileShader(const std::filesystem::path &shaderFilePath, int shaderType);
 
-    static uint32_t LinkShaderProgram(uint32_t vertexShaderId,
-                                      uint32_t fragmentShaderId);
+    static uint32_t LinkShaderProgram(uint32_t vertexShaderId, uint32_t fragmentShaderId);
 
 private:
-    Shader();
+    Shader(void);
 };
 
-#endif // SHADER_HPP_
+#endif // BENGINE_RENDER_GL_SHADER_HPP

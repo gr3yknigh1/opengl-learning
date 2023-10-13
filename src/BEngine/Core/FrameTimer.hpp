@@ -1,5 +1,5 @@
-#ifndef BADENGINE_CORE_FRAMETIMER_HPP_
-#define BADENGINE_CORE_FRAMETIMER_HPP_
+#ifndef BENGINE_CORE_FRAMETIMER_HPP
+#define BENGINE_CORE_FRAMETIMER_HPP
 
 #include <GLFW/glfw3.h>
 
@@ -18,4 +18,4 @@ private:
     float m_LastFrameTime;
 };
 
-#endif // FRAMETIMER_HPP_
+#endif // BENGINE_CORE_FRAMETIMER_HPP

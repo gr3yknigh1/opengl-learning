@@ -49,14 +49,10 @@ int main(void)
     Camera3D camera(Transform3D({0, 0, 3}, {0, -90, 0}));
 
     app->MouseEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
-        [&](GLFWwindow *window, double xPosition, double yPosition) {
-            camera.Rotate(xPosition, yPosition);
-        }));
+        [&](GLFWwindow *window, double xPosition, double yPosition) { camera.Rotate(xPosition, yPosition); }));
 
     app->ScrollEvent.Subscribe(MakeRef<Proc<GLFWwindow *, double, double>>(
-        [&](GLFWwindow *window, double xOffset, double yOffset) {
-            camera.Zoom(xOffset, yOffset);
-        }));
+        [&](GLFWwindow *window, double xOffset, double yOffset) { camera.Zoom(xOffset, yOffset); }));
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
     // const std::vector<float> vertices = {
@@ -123,8 +119,7 @@ int main(void)
     //     glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
     Shader cubeShader =
-        Shader::FromSourceFiles(ASSETS_DIR "/shaders/model-vs.glsl",
-                                ASSETS_DIR "/shaders/model-fs.glsl");
+        Shader::FromSourceFiles(ASSETS_DIR "/shaders/model-vs.glsl", ASSETS_DIR "/shaders/model-fs.glsl");
 
     // VertexArray lampVa;
     // lampVa.AddBuffer(vb, layout);

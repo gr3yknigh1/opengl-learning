@@ -1,5 +1,5 @@
-#ifndef BENGINE_CORE_TRANSFORM3D_HPP_
-#define BENGINE_CORE_TRANSFORM3D_HPP_
+#ifndef BENGINE_CORE_TRANSFORM3D_HPP
+#define BENGINE_CORE_TRANSFORM3D_HPP
 
 #include <glm/glm.hpp>
 
@@ -13,4 +13,4 @@ struct Transform3D
     glm::vec3 Rotation;
 };
 
-#endif // BENGINE_CORE_TRANSFORM3D_HPP_
+#endif // BENGINE_CORE_TRANSFORM3D_HPP

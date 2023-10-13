@@ -5,24 +5,20 @@
 #include "BEngine/Render/GL/IndexBuffer.hpp"
 #include "BEngine/Render/GL/Utils.hpp"
 
-IndexBuffer::IndexBuffer(const uint32_t *indices, const uint64_t count)
-    : m_Count(count)
+IndexBuffer::IndexBuffer(const uint32_t *indices, const uint64_t count) : m_Count(count)
 {
     GL_Call(glGenBuffers(1, &m_Id));
     Bind();
-    GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         static_cast<long>(count * sizeof(uint32_t)), indices,
-                         GL_STATIC_DRAW));
+    GL_Call(
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<long>(count * sizeof(uint32_t)), indices, GL_STATIC_DRAW));
 }
 
-IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices)
-    : m_Count(indices.size())
+IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : m_Count(indices.size())
 {
     GL_Call(glGenBuffers(1, &m_Id));
     Bind();
-    GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         static_cast<long>(m_Count * sizeof(uint32_t)),
-                         indices.data(), GL_STATIC_DRAW));
+    GL_Call(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<long>(m_Count * sizeof(uint32_t)), indices.data(),
+                         GL_STATIC_DRAW));
 }
 
 void IndexBuffer::Bind() const

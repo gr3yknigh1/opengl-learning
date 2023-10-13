@@ -1,5 +1,5 @@
-#ifndef MESH_HPP_
-#define MESH_HPP_
+#ifndef BENGINE_RENDER_MODEL_MESH_HPP
+#define BENGINE_RENDER_MODEL_MESH_HPP
 
 #include <cstdint>
 #include <vector>
@@ -17,8 +17,7 @@
 class Mesh
 {
 public:
-    Mesh(const std::vector<Vertex> vertices,
-         const std::vector<uint32_t> indices,
+    Mesh(const std::vector<Vertex> vertices, const std::vector<uint32_t> indices,
          const std::vector<Ref<Texture>> textures);
 
     // TODO: Remove actual draw call from Mesh class
@@ -46,4 +45,4 @@ private:
     void Initialize(void);
 };
 
-#endif // MESH_HPP_
+#endif // BENGINE_RENDER_MODEL_MESH_HPP

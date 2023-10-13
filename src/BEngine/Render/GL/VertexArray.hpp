@@ -1,5 +1,5 @@
-#ifndef VERTEXARRAY_HPP_
-#define VERTEXARRAY_HPP_
+#ifndef BENGINE_RENDER_GL_VERTEXARRAY_HPP
+#define BENGINE_RENDER_GL_VERTEXARRAY_HPP
 
 #include <GL/glew.h>
 
@@ -18,4 +18,4 @@ public:
     void AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
 };
 
-#endif // VERTEXARRAY_HPP_
+#endif // BENGINE_RENDER_GL_VERTEXARRAY_HPP

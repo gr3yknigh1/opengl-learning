@@ -1,5 +1,5 @@
-#ifndef INDEXBUFFER_HPP_
-#define INDEXBUFFER_HPP_
+#ifndef BENGINE_RENDER_GL_INDEXBUFFER_HPP
+#define BENGINE_RENDER_GL_INDEXBUFFER_HPP
 
 #include <cstdint>
 #include <vector>
@@ -12,10 +12,10 @@ public:
     explicit IndexBuffer(const uint32_t *indices, const uint64_t count);
     explicit IndexBuffer(const std::vector<uint32_t> &indices);
 
-    void Bind() const;
-    void Unbind() const;
+    void Bind(void) const;
+    void Unbind(void) const;
 
-    constexpr uint64_t GetCount() const
+    constexpr uint64_t GetCount(void) const
     {
         return m_Count;
     }
@@ -24,4 +24,4 @@ private:
     const uint64_t m_Count;
 };
 
-#endif // INDEXBUFFER_HPP_
+#endif // BENGINE_RENDER_GL_INDEXBUFFER_HPP

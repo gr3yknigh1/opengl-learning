@@ -4,8 +4,8 @@
 #include <fmt/format.h>
 #include <stb_image.h>
 
-#include "BEngine/Render/GL/Utils.hpp"
 #include "BEngine/Render/GL/Texture.hpp"
+#include "BEngine/Render/GL/Utils.hpp"
 
 const char *TextureTypeToString(TextureType type)
 {
@@ -25,16 +25,13 @@ const char *TextureTypeToString(TextureType type)
 
 // NOTE: Currently channel parameter doens't not affect
 Texture::Texture(const std::filesystem::path &texturePath)
-    : m_TexturePath(texturePath), m_Buffer(nullptr), m_Type(TextureType::None),
-      m_Width(0), m_Height(0), m_BPP(0)
+    : m_TexturePath(texturePath), m_Buffer(nullptr), m_Type(TextureType::None), m_Width(0), m_Height(0), m_BPP(0)
 {
     Initialize();
 }
 
-Texture::Texture(const std::filesystem::path &texturePath,
-                 const TextureType type)
-    : m_TexturePath(texturePath), m_Buffer(nullptr), m_Type(type), m_Width(0),
-      m_Height(0), m_BPP(0)
+Texture::Texture(const std::filesystem::path &texturePath, const TextureType type)
+    : m_TexturePath(texturePath), m_Buffer(nullptr), m_Type(type), m_Width(0), m_Height(0), m_BPP(0)
 {
     Initialize();
 }
@@ -99,30 +96,25 @@ void Texture::Initialize(void)
 {
     if (!std::filesystem::exists(m_TexturePath))
     {
-        throw std::runtime_error(
-            fmt::format("Path doesn't exists '{}'", m_TexturePath.c_str()));
+        throw std::runtime_error(fmt::format("Path doesn't exists '{}'", m_TexturePath.c_str()));
     }
 
-    std::cout << fmt::format("Loading texture from path: '{}' - of type {}\n",
-                             m_TexturePath.c_str(), (int)m_Type);
+    std::cout << fmt::format("Loading texture from path: '{}' - of type {}\n", m_TexturePath.c_str(), (int)m_Type);
 
     stbi_set_flip_vertically_on_load(true);
     // TODO: Add channels field
-    m_Buffer = stbi_load(
-        m_TexturePath.c_str(), reinterpret_cast<int *>(&m_Width),
-        reinterpret_cast<int *>(&m_Height), reinterpret_cast<int *>(&m_BPP), 4);
+    m_Buffer = stbi_load(m_TexturePath.c_str(), reinterpret_cast<int *>(&m_Width), reinterpret_cast<int *>(&m_Height),
+                         reinterpret_cast<int *>(&m_BPP), 4);
 
     if (m_Buffer == nullptr)
     {
-        throw std::runtime_error(fmt::format("Error during image loading: '{}'",
-                                             m_TexturePath.c_str()));
+        throw std::runtime_error(fmt::format("Error during image loading: '{}'", m_TexturePath.c_str()));
     }
 
     GL_Call(glGenTextures(1, &m_Id));
     GL_Call(glBindTexture(GL_TEXTURE_2D, m_Id));
 
-    GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, m_Buffer));
+    GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Buffer));
 
     GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
 
@@ -130,10 +122,8 @@ void Texture::Initialize(void)
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     // NOTE: _S and _T is like x and y for textures
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
-    GL_Call(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
+    GL_Call(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
 
     Unbind();
 

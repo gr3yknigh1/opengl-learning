@@ -1,5 +1,5 @@
-#ifndef TEXTURE_HPP_
-#define TEXTURE_HPP_
+#ifndef BENGINE_RENDER_GL_TEXTURE_HPP
+#define BENGINE_RENDER_GL_TEXTURE_HPP
 
 #include <cstdint>
 #include <filesystem>
@@ -77,4 +77,4 @@ private:
     void Initialize(void);
 };
 
-#endif // TEXTURE_HPP_
+#endif // BENGINE_RENDER_GL_TEXTURE_HPP

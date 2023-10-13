@@ -1,5 +1,5 @@
-#ifndef VERTEX_HPP_
-#define VERTEX_HPP_
+#ifndef BENGINE_RENDER_GL_VERTEX_HPP
+#define BENGINE_RENDER_GL_VERTEX_HPP
 
 #include <glm/glm.hpp>
 
@@ -10,4 +10,4 @@ struct Vertex
     glm::vec2 TextureCoordinates;
 };
 
-#endif // VERTEX_HPP_
+#endif // BENGINE_RENDER_GL_VERTEX_HPP

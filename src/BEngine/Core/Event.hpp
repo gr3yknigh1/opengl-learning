@@ -1,5 +1,5 @@
-#ifndef BADENGINE_CORE_EVENT_HPP_
-#define BADENGINE_CORE_EVENT_HPP_
+#ifndef BENGINE_CORE_EVENT_HPP
+#define BENGINE_CORE_EVENT_HPP
 
 #include <algorithm>
 #include <functional>
@@ -24,9 +24,7 @@ public:
 
     void Invoke(Args... payload) const
     {
-        const auto callCallback = [=](Ref<Callback> callback) {
-            (*(callback.get()))(payload...);
-        };
+        const auto callCallback = [=](Ref<Callback> callback) { (*(callback.get()))(payload...); };
 
         std::for_each(m_Callbacks.begin(), m_Callbacks.end(), callCallback);
     }
@@ -35,9 +33,7 @@ public:
     {
         const auto callbackSearchResult =
             std::find_if(m_Callbacks.cbegin(), m_Callbacks.cend(),
-                         [=](const Ref<Callback> &callback) {
-                             return callback.get() == callbackToRemove.get();
-                         });
+                         [=](const Ref<Callback> &callback) { return callback.get() == callbackToRemove.get(); });
 
         if (callbackSearchResult != m_Callbacks.cend())
         {
@@ -61,4 +57,4 @@ private:
 
 } // namespace BE::Core
 
-#endif // EVENT_HPP_
+#endif // BENGINE_CORE_EVENT_HPP

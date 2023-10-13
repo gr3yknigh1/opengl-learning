@@ -1,5 +1,5 @@
-#ifndef VERTEXBUFFER_HPP_
-#define VERTEXBUFFER_HPP_
+#ifndef BENGINE_RENDER_GL_VERTEXBUFFER_HPP
+#define BENGINE_RENDER_GL_VERTEXBUFFER_HPP
 
 #include <vector>
 
@@ -19,12 +19,11 @@ public:
 
         GL_Call(glGenBuffers(1, &m_Id));
         Bind();
-        GL_Call(glBufferData(GL_ARRAY_BUFFER, static_cast<long>(dataSize),
-                             data.data(), GL_STATIC_DRAW));
+        GL_Call(glBufferData(GL_ARRAY_BUFFER, static_cast<long>(dataSize), data.data(), GL_STATIC_DRAW));
     }
 
     void Bind() const;
     void Unbind() const;
 };
 
-#endif // VERTEXBUFFER_HPP_
+#endif // BENGINE_RENDER_GL_VERTEXBUFFER_HPP

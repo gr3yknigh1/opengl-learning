@@ -1,5 +1,5 @@
-#ifndef BADENGINE_RENDER_CAMERA3D_HPP_
-#define BADENGINE_RENDER_CAMERA3D_HPP_
+#ifndef BENGINE_RENDER_CAMERA3D_HPP
+#define BENGINE_RENDER_CAMERA3D_HPP
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -19,8 +19,7 @@ public:
     Camera3D() = delete;
     Camera3D(Camera3D &&other) = delete;
 
-    Camera3D(const Transform3D &transform, float fov = 45,
-             float sensitivity = 0.1, bool isYInverse = false,
+    Camera3D(const Transform3D &transform, float fov = 45, float sensitivity = 0.1, bool isYInverse = false,
              float speed = 2.5, float speedModifier = 2);
 
     constexpr Transform3D &GetTransform(void)
@@ -56,4 +55,4 @@ private:
 
 } // namespace BE::Render
 
-#endif // CAMERA3D_HPP_
+#endif // BENGINE_RENDER_CAMERA3D_HPP
