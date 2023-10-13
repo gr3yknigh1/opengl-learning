@@ -56,6 +56,7 @@ int main(void)
         [&](GLFWwindow *window, double xOffset, double yOffset) { camera.Zoom(xOffset, yOffset); }));
 
     const glm::vec4 clearColor = {.1f, .1f, .1f, 1.f};
+
     // const std::vector<float> vertices = {
     //     // positions          // normals           // texture coords
     //     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //
@@ -110,6 +111,7 @@ int main(void)
     // cubeVa.AddBuffer(vb, layout);
 
     // glm::vec3 cubeColor = {0.7, 0.2, 0.2};
+
     glm::vec3 cubePosition = {0, 0, 0};
 
     // std::vector<glm::vec3> cubePositions = {
@@ -143,7 +145,7 @@ int main(void)
 
     Renderer::SetClearColor({.1, .1, .1, 1});
 
-    Model cubeModel(ASSETS_DIR "/meshes/cube.obj");
+    Model cubeModel(ASSETS_DIR "/meshes/ak_47.obj");
 
     uint64_t index = 0;
 
